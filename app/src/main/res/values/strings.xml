@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">FYP_APP_FINAL</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="class_list_heading">Your Classes</string>
+    <string name="action_menu_logout">Log Out</string>
+</resources>
