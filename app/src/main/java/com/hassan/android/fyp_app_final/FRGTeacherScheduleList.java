@@ -1,12 +1,12 @@
 package com.hassan.android.fyp_app_final;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,13 +16,13 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 
-public class TeacherScheduleList extends Fragment {
+public class FRGTeacherScheduleList extends Fragment {
 
     private RecyclerView recycler;
     private ScheduleListRecyclerAdapter adapter;
     private ArrayList<CourseModel> courses;
 
-    public TeacherScheduleList() {
+    public FRGTeacherScheduleList() {
         // Required empty public constructor
     }
 

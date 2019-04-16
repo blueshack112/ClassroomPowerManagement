@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Toast.makeText(MainActivity.this, "Correct Login and " + (rememberedCheck.isChecked()? "Remembered": "Not Remembered"), Toast.LENGTH_SHORT).show();
                 Intent userScreenIntent = new Intent(MainActivity.this, UserHome.class);
-                userScreenIntent.putExtra("userType", "teacher");
+                userScreenIntent.putExtra("userType", "hod");
                 startActivity(userScreenIntent);
             }
         });
