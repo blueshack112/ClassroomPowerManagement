@@ -6,6 +6,7 @@
     <string name="room_status_heading">Check Room Status</string>
     <string name="default_text_room_spinner">Select A Room Please</string>
     <string name="teacher_schedule_list_heading">Your Classes: </string>
+    <string name="pending_requests_list_heading">Pending Requests</string>
     <string name="room_status_attribute_date">Date: </string>
     <string name="room_status_attribute_room">Room Name: </string>
     <string name="room_status_attribute_course_name">Course Name: </string>
@@ -13,8 +14,11 @@
     <string name="room_status_attribute_session">Session: </string>
     <string name="room_status_attribute_class_type">Class Type: </string>
     <string name="room_status_attribute_attendance">Attendance: </string>
-
-
+    <string name="pending_request_attribute_teacher_name">Teacher Name: </string>
+    <string name="pending_request_attribute_course_name">Course Name: </string>
+    <string name="pending_request_attribute_request_type">Request Type: </string>
+    <string name="pending_request_attribute_reason">General Reason: </string>
+    <string name="pending_request_button_details">Details</string>
 
     <string-array name="Rooms">
         <item>Room A</item>
