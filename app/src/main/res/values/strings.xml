@@ -6,7 +6,6 @@
     <string name="room_status_heading">Check Room Status</string>
     <string name="default_text_room_spinner">Select A Room Please</string>
     <string name="teacher_schedule_list_heading">Your Classes: </string>
-    <string name="pending_requests_list_heading">Pending Requests</string>
     <string name="room_status_attribute_date">Date: </string>
     <string name="room_status_attribute_room">Room Name: </string>
     <string name="room_status_attribute_course_name">Course Name: </string>
@@ -19,6 +18,25 @@
     <string name="pending_request_attribute_request_type">Request Type: </string>
     <string name="pending_request_attribute_reason">General Reason: </string>
     <string name="pending_request_button_details">Details</string>
+    <string name="override_room_select_heading">Room:</string>
+    <string name="override_schedule_heading">Schedule: </string>
+    <string name="override_radio_button_right_now">Right Now</string>
+    <string name="override_radio_button_later">Later</string>
+    <string name="override_schedule_select">Select Date, Slot, and Length</string>
+    <string name="override_schedule_date">Date:</string>
+    <string name="override_schedule_slot">Slot:</string>
+    <string name="override_schedule_length">Length:</string>
+    <string name="override_selection_heading">Control Appliances Appropriately</string>
+    <string name="override_selection_relay_1">Lights and Fans Front</string>
+    <string name="override_selection_relay_2">Lights and Fans Middle</string>
+    <string name="override_selection_relay_3">Lights and Fans Rear</string>
+    <string name="override_selection_relay_4">Air Conditioner Front</string>
+    <string name="override_selection_relay_5">Air Conditioner Back</string>
+    <string name="override_selection_button_open_all">Open All</string>
+    <string name="override_selection_button_close_all">Close All</string>
+    <string name="submit_button">Submit</string>
+
+
 
     <string-array name="Rooms">
         <item>Room A</item>
