@@ -13,6 +13,7 @@
     <string name="room_status_attribute_session">Session: </string>
     <string name="room_status_attribute_class_type">Class Type: </string>
     <string name="room_status_attribute_attendance">Attendance: </string>
+    <string name="pending_request_list_heading">Your Pending Requests</string>
     <string name="pending_request_attribute_teacher_name">Teacher Name: </string>
     <string name="pending_request_attribute_course_name">Course Name: </string>
     <string name="pending_request_attribute_request_type">Request Type: </string>
@@ -50,4 +51,14 @@
         <item>Room I</item>
         <item>Room J</item>
     </string-array>
+    <string-array name="Slots">
+    <item>Slot 1</item>
+    <item>Slot 2</item>
+    <item>Slot 3</item>
+    <item>Slot 4</item>
+    <item>Slot 5</item>
+    <item>Slot 6</item>
+    <item>Slot 7</item>
+    <item>Slot 8</item>
+</string-array>
 </resources>

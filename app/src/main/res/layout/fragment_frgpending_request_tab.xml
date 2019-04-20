@@ -13,7 +13,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/pending_requests_list_heading"
+        android:text="@string/pending_request_list_heading"
         android:textColor="@color/colorAccentMaroonish"
         android:textSize="24sp"
         android:textStyle="bold"

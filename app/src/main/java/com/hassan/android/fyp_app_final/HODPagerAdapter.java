@@ -11,9 +11,10 @@ public class HODPagerAdapter extends FragmentPagerAdapter {
     private Fragment [] fragments;
     public HODPagerAdapter (FragmentManager manager) {
         super(manager);
-        fragments = new Fragment[2];
+        fragments = new Fragment[3];
         fragments[0] = new FRGRoomStatusTab();
         fragments[1] = new FRGPendingRequestTab();
+        fragments[2] = new FRGControlOverrideTab();
     }
     @Override
     public Fragment getItem(int position) {
