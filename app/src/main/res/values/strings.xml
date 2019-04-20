@@ -5,6 +5,17 @@
     <string name="action_menu_logout">Log Out</string>
     <string name="room_status_heading">Check Room Status</string>
     <string name="default_text_room_spinner">Select A Room Please</string>
+    <string name="teacher_schedule_list_heading">Your Classes: </string>
+    <string name="room_status_attribute_date">Date: </string>
+    <string name="room_status_attribute_room">Room Name: </string>
+    <string name="room_status_attribute_course_name">Course Name: </string>
+    <string name="room_status_attribute_teacher_name">Teacher Name: </string>
+    <string name="room_status_attribute_session">Session: </string>
+    <string name="room_status_attribute_class_type">Class Type: </string>
+    <string name="room_status_attribute_attendance">Attendance: </string>
+
+
+
     <string-array name="Rooms">
         <item>Room A</item>
         <item>Room B</item>
