@@ -17,6 +17,7 @@ import android.widget.Toast;
 public class UserHome extends AppCompatActivity {
     private String userType;
     private LinearLayoutCompat fragmentHolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,18 +42,31 @@ public class UserHome extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.user_action_menu, menu);
+        Intent menuIntent = getIntent();
+        if (menuIntent.getStringExtra("userType").equals("teacher"))
+            getMenuInflater().inflate(R.menu.teacher_action_menu, menu);
+        else
+            getMenuInflater().inflate(R.menu.user_action_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.logout) {
+        if (item.getItemId() == R.id.logout)
             onLogOutClicked();
-        }
+
+        else if (item.getItemId()==R.id.request)
+            onRequestClicked();
         return super.onOptionsItemSelected(item);
     }
-    public void onLogOutClicked () {
+
+    //functionality for request button
+    public void onRequestClicked () {
+
+    }
+
+    //functionality for logout button
+    public void onLogOutClicked() {
         AlertDialog.Builder logoutAlert = new AlertDialog.Builder(this);
         logoutAlert.setTitle("Confirm Logout");
         logoutAlert.setMessage("Are you sure you want to logout?");

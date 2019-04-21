@@ -36,6 +36,18 @@
     <string name="override_selection_button_open_all">Open All</string>
     <string name="override_selection_button_close_all">Close All</string>
     <string name="submit_button">Submit</string>
+    <string name="extra_request_form_heading">Special Request Form</string>
+    <string name="extra_request_form_course_name">Course: </string>
+    <string name="extra_request_form_request_type">Request Type:</string>
+    <string name="extra_request_form_rb_extra_class">Extra Class</string>
+    <string name="extra_request_form_rb_cancel_class">Cancel Class</string>
+    <string name="extra_request_form_day">Day:</string>
+    <string name="extra_request_form_room">Room:</string>
+    <string name="extra_request_form_slot">Slot:</string>
+    <string name="extra_request_form_length">Length:</string>
+    <string name="extra_request_form_general_reason">General Reason:</string>
+    <string name="extra_request_form_message">Message:</string>
+    <string name="extra_request_form_message_hint">Enter your message...</string>
 
 
 
