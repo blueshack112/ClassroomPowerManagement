@@ -45,9 +45,11 @@
     <string name="extra_request_form_room">Room:</string>
     <string name="extra_request_form_slot">Slot:</string>
     <string name="extra_request_form_length">Length:</string>
+    <string name="extra_request_form_classes">Classes:</string>
     <string name="extra_request_form_general_reason">General Reason:</string>
     <string name="extra_request_form_message">Message:</string>
     <string name="extra_request_form_message_hint">Enter your message...</string>
+    <string name="extra_request_form_title">Extra Request Form</string>
 
 
 
