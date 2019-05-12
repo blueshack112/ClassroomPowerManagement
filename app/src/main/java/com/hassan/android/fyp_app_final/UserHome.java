@@ -18,6 +18,7 @@ public class UserHome extends AppCompatActivity {
     private String userType;
     private LinearLayoutCompat fragmentHolder;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +28,12 @@ public class UserHome extends AppCompatActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         userType = "";
         Intent mainIntnet = getIntent();
-        if (mainIntnet.getStringExtra("userType").equals("teacher")) {
+        if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
             Toast.makeText(this, "Entered", Toast.LENGTH_SHORT).show();
             Fragment temp = new FRGTeacherScheduleList();
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
-        } else if (mainIntnet.getStringExtra("userType").equals("hod")) {
+        } else if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_HOD)) {
             Toast.makeText(this, "Entered", Toast.LENGTH_SHORT).show();
             Fragment temp = new FRGHODTabPages();
             transaction.add(R.id.main_fragment_space, temp);
@@ -43,7 +44,7 @@ public class UserHome extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Intent menuIntent = getIntent();
-        if (menuIntent.getStringExtra("userType").equals("teacher"))
+        if (menuIntent.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER))
             getMenuInflater().inflate(R.menu.teacher_action_menu, menu);
         else
             getMenuInflater().inflate(R.menu.user_action_menu, menu);
@@ -55,14 +56,14 @@ public class UserHome extends AppCompatActivity {
         if (item.getItemId() == R.id.logout)
             onLogOutClicked();
 
-        else if (item.getItemId()==R.id.request)
+        else if (userType == MainActivity.ACCOUNT_TYPE_TEACHER && item.getItemId() == R.id.request)
             onRequestClicked();
         return super.onOptionsItemSelected(item);
     }
 
     //functionality for request button
-    public void onRequestClicked () {
-
+    public void onRequestClicked() {
+        //TODO: complete request dialog form and implement here...
     }
 
     //functionality for logout button
