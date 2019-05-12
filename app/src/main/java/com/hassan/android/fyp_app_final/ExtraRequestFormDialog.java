@@ -64,7 +64,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         setupRequestTypeSelectionRGroup();
     }
 
-    
+
     public void setupRoomSelectionSpinner () {
 
         roomSelectionSpinnerAdapter = new RoomSelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item);
