@@ -34,9 +34,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView idText, passwordText;
     private CheckBox rememberedCheck;
 
+    //Connection URL
+    public static final String URL = "192.168.18.11";
+
+    //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
     public static final String ACCOUNT_TYPE_HOD = "HOD";
     public static final String ACCOUNT_TYPE_QMD = "QMD";
+
+    //Designations
+    public static final String TEACHER_DESIGNATION_ASST_PROF = "asst_prof";
+    public static final String TEACHER_DESIGNATION_HOD = "HOD";
+    public static final String TEACHER_DESIGNATION_QMD = "QMD";
 
 
     @Override
@@ -57,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         "Verifying Credentials. Please wait...", true);
                 final String userId = idText.getText().toString();
                 final String userPass = passwordText.getText().toString();
-                String url="http://192.168.18.11:5555/AreebaFYP/auth.php";
+                String url="http://"+ URL +"/AreebaFYP/auth.php";
 
                 //Setting up response handler
                 Response.Listener listener=new Response.Listener() {
@@ -66,14 +75,12 @@ public class MainActivity extends AppCompatActivity {
                         boolean passwordCorrect = false;
                         String accountType = "";
                         try {
-                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                            Log.d("XXXXXXXXXXXXXXXXXXXXXXX", response.toString());
+                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                             JSONObject authResponse =new JSONObject(response.toString());
                             boolean userFound = authResponse.getBoolean("idFound");
 
                             //Check if user ID is correct
                             if (userFound) {
-                                Log.d("ZZZZZZZZZZZZZZZZZZ", Boolean.toString(authResponse.getBoolean("passwordCorrect")));
                                 passwordCorrect = authResponse.getBoolean("passwordCorrect");
                                 accountType = authResponse.getString("permissionLevel");
                             } else {
@@ -94,10 +101,17 @@ public class MainActivity extends AppCompatActivity {
                                 if (accountType.equals(ACCOUNT_TYPE_TEACHER)) {
                                     Intent userScreenIntent = new Intent(MainActivity.this, UserHome.class);
                                     userScreenIntent.putExtra("userType", ACCOUNT_TYPE_TEACHER);
+                                    userScreenIntent.putExtra("userID", userId);
+                                    userScreenIntent.putExtra("userFirstName", authResponse.getString("holderFirstName"));
+                                    userScreenIntent.putExtra("userLastName", authResponse.getString("holderLastName"));
+                                    userScreenIntent.putExtra("userDesignation", authResponse.getString("holderDesignation"));
                                     startActivity(userScreenIntent);
                                 } else if (accountType.equals(ACCOUNT_TYPE_HOD)) {
                                     Intent userScreenIntent = new Intent(MainActivity.this, UserHome.class);
                                     userScreenIntent.putExtra("userType", ACCOUNT_TYPE_HOD);
+                                    userScreenIntent.putExtra("userFirstName", authResponse.getString("holderFirstName"));
+                                    userScreenIntent.putExtra("userLastName", authResponse.getString("holderLastName"));
+                                    userScreenIntent.putExtra("userDesignation", authResponse.getString("holderDesignationName"));
                                     startActivity(userScreenIntent);
                                 } else if (accountType.equals(ACCOUNT_TYPE_QMD)){
                                     //Show error dialog for wrong account type
@@ -147,19 +161,17 @@ public class MainActivity extends AppCompatActivity {
                 StringRequest request =new StringRequest(Request.Method.POST,url,listener,errorListener){
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
-                        Log.d("XXXXXXXXXXXXXXXXXXXX", userId+"\t"+userPass);
-
                         Map<String, String> param=new HashMap<>();
                         //Put user ID and password in data set
                         param.put("userID", userId);
-                        param.put("userPass", userPass);return param;
+                        param.put("userPass", userPass);
+                        return param;
                     }
                 };
                 //Execute request
                 Volleyton.getInstance(getApplicationContext()).addToRequestQueue(request);
                 dialog.cancel();
             }
-
         });
     }
 }

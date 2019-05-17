@@ -12,11 +12,23 @@ import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class UserHome extends AppCompatActivity {
+
+    //Main variables
     private String userType;
+    private String userFirstNname;
+    private String userLastNname;
+    private String userDesignation;
+    private String userID;
+
+    //UI elements
     private LinearLayoutCompat fragmentHolder;
+    private TextView usernameTextVeiw;
+    private TextView userIDTextVeiw;
+    private TextView userDesignationTextVeiw;
 
 
     @Override
@@ -27,14 +39,36 @@ public class UserHome extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         userType = "";
+        userFirstNname= "";
+        userLastNname= "";
+        userDesignation= "";
+        userID = "";
         Intent mainIntnet = getIntent();
+        userFirstNname = mainIntnet.getStringExtra("userFirstName");
+        userLastNname = mainIntnet.getStringExtra("userLastName");
+        userDesignation = mainIntnet.getStringExtra("userDesignation");
+        userID = mainIntnet.getStringExtra("userID");
+
+        //Set text boxes that will carry details
+        usernameTextVeiw = findViewById(R.id.tv_user_name);
+        userIDTextVeiw = findViewById(R.id.tv_user_ID);
+        userDesignationTextVeiw = findViewById(R.id.tv_user_designation);
+
+        //Fill Details
+        usernameTextVeiw.setText(userFirstNname + " " + userLastNname);
+        userIDTextVeiw.setText(userID);
+        if (userDesignation.equals(MainActivity.TEACHER_DESIGNATION_ASST_PROF))
+            userDesignationTextVeiw.setText("Assistant Professor");
+        else if (userDesignation.equals(MainActivity.TEACHER_DESIGNATION_HOD))
+            userDesignationTextVeiw.setText("Professor / HOD");
+
+        //initialize fragment based on account type
         if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
-            Toast.makeText(this, "Entered", Toast.LENGTH_SHORT).show();
             Fragment temp = new FRGTeacherScheduleList();
+            ((FRGTeacherScheduleList) temp).setUserID(userID);
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
         } else if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_HOD)) {
-            Toast.makeText(this, "Entered", Toast.LENGTH_SHORT).show();
             Fragment temp = new FRGHODTabPages();
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
