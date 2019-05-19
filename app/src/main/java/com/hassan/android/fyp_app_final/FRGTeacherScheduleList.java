@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -40,8 +42,9 @@ public class FRGTeacherScheduleList extends Fragment {
 
     protected String userID = "";
     private RecyclerView recycler;
-    private ScheduleListRecyclerAdapter adapter;
-    private ArrayList<CourseModel> courses;
+    protected ScheduleListRecyclerAdapter adapter;
+    protected ArrayList<CourseModel> courses;
+    private ListUpdater updateList;
 
     public FRGTeacherScheduleList() {
         // Required empty public constructor
@@ -64,6 +67,10 @@ public class FRGTeacherScheduleList extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(layoutManager);
+        //Thread to keep updating the list
+        updateList = new ListUpdater();
+        updateList.execute("");
+
 
         final String temp = userID;
         //Start calling schedule data
@@ -76,36 +83,18 @@ public class FRGTeacherScheduleList extends Fragment {
             @Override
             public void onResponse(Object response) {
                 try {
-//                    Log.d("YYYYYYYYYYYYYYYYY", response.toString());
                     JSONObject schedResponse = new JSONObject(response.toString());
 
                     if (schedResponse.getBoolean("scheduleFound")) {
                         JSONArray scheduleItems = schedResponse.getJSONArray("scheduleItems");
-                        Calendar cal = Calendar.getInstance();
                         for (int i = 0; i < scheduleItems.length(); i++) {
                             JSONObject tempObject = scheduleItems.getJSONObject(i);
                             String courseName = tempObject.getString("courseName");
-                            String daySlotLength = "";
-                            cal.set(Calendar.DAY_OF_WEEK,Integer.parseInt(tempObject.getString("dayOfWeek"))+1);
-                            daySlotLength += cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
-                            daySlotLength += " | " + tempObject.getString("slot");
-
-                            if (Integer.parseInt(tempObject.getString("slot")) == 1)
-                                daySlotLength += "st slot";
-                            else if (Integer.parseInt(tempObject.getString("slot")) == 2)
-                                daySlotLength += "nd slot";
-                            else if (Integer.parseInt(tempObject.getString("slot")) == 3)
-                                daySlotLength += "rd slot";
-                            else
-                                daySlotLength += "th slot";
-
-                            daySlotLength += " | " + tempObject.getString("classLength") + " sessions";
-                            courses.add(new CourseModel(courseName, daySlotLength));
+                            courses.add(new CourseModel(courseName, tempObject.getString("dayOfWeek"), tempObject.getString("slot"), tempObject.getString("classLength")));
                             adapter.notifyDataSetChanged();
-                            Log.d("XXXXXXXXXXXXXXXXXXXXX", "added");
                         }
                     } else {
-                        courses.add(new CourseModel("NA", "NA"));
+                        courses.add(new CourseModel("NA", "NA", "NA", "NA"));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -132,5 +121,45 @@ public class FRGTeacherScheduleList extends Fragment {
         //Execute request
         Volleyton.getInstance(getContext()).addToRequestQueue(request);
         dialog.cancel();
+
+
+    }
+
+    private class ListUpdater extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            boolean dummy = true;
+            boolean firstTime = true;
+            while (dummy) {
+                if (firstTime) {
+                    try {
+                        firstTime = false;
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (int i = 0; i < courses.size(); i++) {
+                    if (courses.get(i).isTime()) {
+                        courses.get(i).setIsActive(true);
+                    } else {
+                        courses.get(i).setIsActive(false);
+                    }
+                    publishProgress();
+                }
+                try {
+                    Thread.sleep(12000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            adapter.updateDataSet(courses);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

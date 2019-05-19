@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#258023</color>
     <color name="colorAccentBlue">#3a3ad4</color>
     <color name="colorAccentMaroonish">#a13f44</color>
-    <color name="availability">#39ff14</color>
-    <color name="non_availability">#666666</color>
+    <color name="availabile">#39ff14</color>
     <color name="separator">#bebebe</color>
+    <color name="not_available">#FF0000</color>
 </resources>

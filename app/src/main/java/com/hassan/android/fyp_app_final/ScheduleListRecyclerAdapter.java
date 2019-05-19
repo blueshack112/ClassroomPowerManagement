@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,13 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter <ScheduleL
     public void onBindViewHolder(Holder holder, int position) {
         holder.courseNameText.setText(courses.get(position).getCourseName());
         holder.courseDaySlotText.setText(courses.get(position).getCourseDaySlot());
+        if (courses.get(position).isActive()) {
+            holder.attendanceButton.setVisibility(View.VISIBLE);
+            holder.courseStatusImage.setImageResource(R.drawable.icon_class_available);
+        } else {
+            holder.attendanceButton.setVisibility(View.GONE);
+            holder.courseStatusImage.setImageResource(R.drawable.icon_class_offline);
+        }
     }
 
     @Override
@@ -45,12 +53,20 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter <ScheduleL
         TextView courseNameText;
         TextView courseDaySlotText;
         ImageView courseStatusImage;
+        Button attendanceButton;
 
         public Holder (View itemView) {
             super(itemView);
             courseNameText = itemView.findViewById(R.id.tv_course_name);
             courseDaySlotText = itemView.findViewById(R.id.tv_day_slot);
             courseStatusImage = itemView.findViewById(R.id.img_status);
+            attendanceButton = itemView.findViewById(R.id.button_add_attendance);
         }
+    }
+
+
+
+    public void updateDataSet (ArrayList<CourseModel> courses) {
+        this.courses = courses;
     }
 }
