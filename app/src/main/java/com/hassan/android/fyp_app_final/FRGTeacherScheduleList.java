@@ -134,7 +134,7 @@ public class FRGTeacherScheduleList extends Fragment {
                 if (firstTime) {
                     try {
                         firstTime = false;
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -148,7 +148,7 @@ public class FRGTeacherScheduleList extends Fragment {
                     publishProgress();
                 }
                 try {
-                    Thread.sleep(12000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

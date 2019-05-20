@@ -10,7 +10,7 @@
     <string name="room_status_attribute_room">Room Name: </string>
     <string name="room_status_attribute_course_name">Course Name: </string>
     <string name="room_status_attribute_teacher_name">Teacher Name: </string>
-    <string name="room_status_attribute_session">Session: </string>
+    <string name="room_status_attribute_session">Sessions: </string>
     <string name="room_status_attribute_class_type">Class Type: </string>
     <string name="room_status_attribute_attendance">Attendance: </string>
     <string name="pending_request_list_heading">Your Pending Requests</string>
