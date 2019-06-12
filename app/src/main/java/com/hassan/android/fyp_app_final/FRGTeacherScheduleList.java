@@ -108,7 +108,7 @@ public class FRGTeacherScheduleList extends Fragment {
             }
         };
 
-        //Initialize request string with GET method
+        //Initialize request string with POST method
         StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

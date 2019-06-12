@@ -21,9 +21,21 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class FRGControlOverrideTab extends Fragment {
@@ -185,11 +197,73 @@ public class FRGControlOverrideTab extends Fragment {
                         msg += "OFF.";
 
                     Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+
+                    //Start preparing data to send to server
+                    String url = "http://" + MainActivity.URL + "/AreebaFYP/scheduleRoomActivity.php";
+
+                    //Setting up response handler
+                    Response.Listener listener = new Response.Listener() {
+                        @Override
+                        public void onResponse(Object response) {
+                            try {
+                                JSONObject schedResponse = new JSONObject(response.toString());
+                                Log.d("AAAAAAAAAAAAAAAAAAAA", response.toString());
+                                if (schedResponse.getBoolean("successful")) {
+                                    JSONArray scheduleItems = schedResponse.getJSONArray("scheduleItems");
+
+
+                                } else {
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    Response.ErrorListener errorListener = new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                        }
+                    };
+
+                    //Initialize request string with POST method
+                    StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> param = new HashMap<>();
+
+                            //Put room id in data set
+                            String selection = roomSelectionSpinner.getSelectedItem().toString();
+                            char roomID = selection.charAt(selection.length() - 1);
+                            roomID -= 64;
+                            param.put("roomID", Integer.toString(1000 + roomID));
+
+                            //Put schedule type in data set
+                            if (scheduleSelection.getCheckedRadioButtonId() == R.id.override_rb_later) {
+                                param.put("scheduleType", "Later");
+                                param.put("date", dateSelector.getText().toString());
+                                param.put("slot", slotSelectionSpinner.getSelectedItem().toString());
+                                param.put("length", Integer.toString(lengthNumberPicker.getValue()));
+                            } else {
+                                param.put("scheduleType", "Now");
+                            }
+
+                            //Put relay controls selected by user
+                            param.put("relay1", Boolean.toString(switches[0].isChecked()));
+                            param.put("relay2", Boolean.toString(switches[1].isChecked()));
+                            param.put("relay3", Boolean.toString(switches[2].isChecked()));
+                            param.put("relay4", Boolean.toString(switches[3].isChecked()));
+                            param.put("relay5", Boolean.toString(switches[4].isChecked()));
+                            return param;
+                        }
+                    };
+                    //Execute request
+                    Volleyton.getInstance(getContext()).addToRequestQueue(request);
                 }
 
             }
         });
-
 
         slotSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -225,7 +299,7 @@ public class FRGControlOverrideTab extends Fragment {
     }
 
     public void upDateDateSelector() {
-        SimpleDateFormat format = new SimpleDateFormat("mm/dd/yy", Locale.US);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
         dateSelector.setText(format.format(myCalendar.getTime()));
     }
 }
