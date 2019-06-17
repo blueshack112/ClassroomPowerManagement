@@ -8,6 +8,7 @@ import java.util.Locale;
 public class CourseModel {
 
     private String mRoom;
+    private String mCourseID;
     private String mCourseName;
     private String mDay;
     private String mSlot;
@@ -15,13 +16,15 @@ public class CourseModel {
     private String mDaySlotLength;
     private boolean mIsActive;
 
-    public CourseModel(String courseName, String day, String slot, String length) {
+    public CourseModel(String courseName, String day, String slot, String length, String room, String courseID) {
         mCourseName = courseName;
         mDaySlotLength = "";
         mDay = day;
         mSlot = slot;
         mLength = length;
         mIsActive = true;
+        mRoom = room;
+        mCourseID = courseID;
     }
 
     public String getCourseName() {
@@ -58,11 +61,20 @@ public class CourseModel {
         mIsActive = x;
     }
 
+    public String getCourseID () {
+        return mCourseID;
+    }
+    public String getRoomID () {
+        return mRoom;
+    }
+
     public boolean isTime() {
         boolean answer = false;
         int day = MainActivity.getCurrentDayOfWeek();
         int slot = MainActivity.getCurrentSlot();
         if (Integer.parseInt(mDay) == day && Integer.parseInt(mSlot) == slot) {
+            answer = true;
+        } else if (Integer.parseInt(mDay) == day && Integer.parseInt(mLength) == 2 && Integer.parseInt(mSlot)+1 == slot+1) {
             answer = true;
         } else {
             answer = false;

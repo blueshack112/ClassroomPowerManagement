@@ -90,11 +90,12 @@ public class FRGTeacherScheduleList extends Fragment {
                         for (int i = 0; i < scheduleItems.length(); i++) {
                             JSONObject tempObject = scheduleItems.getJSONObject(i);
                             String courseName = tempObject.getString("courseName");
-                            courses.add(new CourseModel(courseName, tempObject.getString("dayOfWeek"), tempObject.getString("slot"), tempObject.getString("classLength")));
+                            courses.add(new CourseModel(courseName, tempObject.getString("dayOfWeek"), tempObject.getString("slot"), tempObject.getString("classLength"), tempObject.getString("roomID"), tempObject.getString("courseID")));
                             adapter.notifyDataSetChanged();
                         }
                     } else {
-                        courses.add(new CourseModel("NA", "NA", "NA", "NA"));
+                        courses.add(new CourseModel("NA", "NA", "NA", "NA", "NA", "NA"));
+                        adapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
