@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox rememberedCheck;
 
     //Connection URL
-    public static final String URL = "192.168.18.11";
+    public static final String URL = "192.168.8.101";
 
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
