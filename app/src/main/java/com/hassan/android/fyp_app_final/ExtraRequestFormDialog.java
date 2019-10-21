@@ -37,7 +37,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.extra_request_form_title);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        formView = inflater.inflate(R.layout.extra_request_form_dialog, null);
+        formView = inflater.inflate(R.layout.dialog_extra_request_form, null);
 
         //Creating functionality for dialog objects
         setupViews();

@@ -3,7 +3,6 @@ package com.hassan.android.fyp_app_final;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +60,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
             public void onClick(View v) {
                 final AlertDialog.Builder attendanceBuilder = new AlertDialog.Builder(context);
                 View view = LayoutInflater.from(context).inflate(R.layout.dialog_add_attendance, null);
-                final TextView tvAttendance = view.findViewById(R.id.add_attendance_attendance);
+                final TextView tvAttendance = view.findViewById(R.id.tv_attendance);
                 attendanceBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

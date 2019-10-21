@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
@@ -30,16 +32,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
 @TargetApi(26)
 public class MainActivity extends AppCompatActivity {
 
     //Variable Declaration
     private Button loginButton;
     private TextView idText, passwordText;
-    private CheckBox rememberedCheck;
+    private TextView forgotPassword;
 
     //Connection URL
-    public static final String URL = "192.168.8.101";
+    public static final String URL = "192.168.18.4";
 
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
@@ -68,8 +71,100 @@ public class MainActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.button_login);
         idText = findViewById(R.id.tin_id);
         passwordText = findViewById(R.id.tin_password);
-        rememberedCheck = findViewById(R.id.check_remember_me);
+        forgotPassword = findViewById(R.id.tv_forgot_password);
 
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder accountIDResetBuilder = new AlertDialog.Builder(MainActivity.this);
+                View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_enter_id, null);
+                final TextView accountIdReset = view.findViewById(R.id.tv_account_id);
+                accountIDResetBuilder.setTitle("Enter your account ID");
+                accountIDResetBuilder.setView(view);
+                accountIDResetBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                accountIDResetBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        final String accountID = accountIdReset.getText().toString();
+                        String url = "http://" + URL + "/AreebaFYP/checkEmail.php";
+                        Response.Listener listener = new Response.Listener() {
+                            @Override
+                            public void onResponse(Object response) {
+                                Log.d("XXXXXXXXXXXXXXXXXX", response.toString());
+                                boolean userIdCorrect = false;
+                                try {
+                                    JSONObject authResponse = new JSONObject(response.toString());
+                                    boolean idFound = authResponse.getBoolean("idFound");
+                                    boolean emailSent = authResponse.getBoolean("emailSent");
+
+                                    //Check if user ID is correct
+                                    if (idFound) {
+                                        if (emailSent) {
+                                            Toast.makeText(MainActivity.this, "The password has been sent to your email address. Kindly Check it.", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "Could not send the email due to some difficulties.", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
+                                        }
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "The account ID you entered was incorrect, make sure you are entering a valid account ID.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialog.dismiss();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        Response.ErrorListener errorListener = new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("XXXXXXXXXXXXXXXXXX", "Error");
+                                error.printStackTrace();
+                            }
+                        };
+
+                        //Initialize request string with POST method
+                        StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> param = new HashMap<>();
+                                //Put user ID and password in data set
+                                param.put("userID", accountID);
+                                return param;
+                            }
+                        };
+                        //Execute request
+                        request.setRetryPolicy(new RetryPolicy() {
+                            @Override
+                            public int getCurrentTimeout() {
+                                return 50000;
+                            }
+
+                            @Override
+                            public int getCurrentRetryCount() {
+                                return 50000;
+                            }
+
+                            @Override
+                            public void retry(VolleyError error) throws VolleyError {
+
+                            }
+                        });
+
+                        Volleyton.getInstance(getApplicationContext()).addToRequestQueue(request);
+                    }
+                });
+                AlertDialog dialog = accountIDResetBuilder.create();
+                dialog.show();
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,12 +291,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Get Current Day of week
-    public static int getCurrentDayOfWeek () {
-        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1;
+    public static int getCurrentDayOfWeek() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
     }
 
     //Get current slot
-    public static int getCurrentSlot () {
+    public static int getCurrentSlot() {
         LocalTime currentTime = LocalTime.now();
         if (currentTime.isAfter(SLOT_TIMINGS_1) && currentTime.isBefore(SLOT_TIMINGS_2)) {
             return 1;

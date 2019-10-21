@@ -65,17 +65,6 @@
         app:layout_constraintStart_toStartOf="@+id/tin_password"
         app:layout_constraintTop_toBottomOf="@+id/tin_password" />
 
-    <CheckBox
-        android:id="@+id/check_remember_me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Remember Me"
-        android:textColor="@color/colorAccentMaroonish"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/button_login"
-        app:layout_constraintTop_toBottomOf="@+id/button_login" />
-
     <TextView
         android:id="@+id/tv_forgot_password"
         android:layout_width="wrap_content"
@@ -84,8 +73,8 @@
         android:text="Forgot Password?"
         android:textSize="18dp"
         app:layout_constraintEnd_toEndOf="@+id/button_login"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="@+id/button_login"
-        app:layout_constraintTop_toBottomOf="@+id/check_remember_me" />
+        app:layout_constraintTop_toBottomOf="@+id/button_login" />
 
 </android.support.constraint.ConstraintLayout>
