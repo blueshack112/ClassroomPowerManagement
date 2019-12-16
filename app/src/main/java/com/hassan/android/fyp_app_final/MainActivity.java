@@ -268,7 +268,11 @@ public class MainActivity extends AppCompatActivity {
                 Response.ErrorListener errorListener = new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                        String localizedMessage = error.getLocalizedMessage();
+                        if (localizedMessage != null)
+                            Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                        else
+                            Toast.makeText(MainActivity.this, "Check you internet connection and try again.", Toast.LENGTH_LONG).show();
                     }
                 };
 

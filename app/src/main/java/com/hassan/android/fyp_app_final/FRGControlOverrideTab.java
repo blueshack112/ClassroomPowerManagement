@@ -199,6 +199,7 @@ public class FRGControlOverrideTab extends Fragment {
                     Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
 
                     //Start preparing data to send to server
+                    //TODO: Create the php reciever for this request!
                     String url = "http://" + MainActivity.URL + "/AreebaFYP/scheduleRoomActivity.php";
 
                     //Setting up response handler
