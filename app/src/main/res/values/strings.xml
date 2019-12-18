@@ -4,7 +4,7 @@
     <string name="class_list_heading">Your Classes</string>
     <string name="action_menu_logout">Log Out</string>
     <string name="room_status_heading">Check Room Status</string>
-    <string name="default_text_room_spinner">Select A Room Please</string>
+    <string name="default_text_course_spinner">Select A Course Please</string>
     <string name="teacher_schedule_list_heading">Your Classes: </string>
     <string name="room_status_attribute_date">Date: </string>
     <string name="room_status_attribute_room">Room Name: </string>
@@ -45,14 +45,14 @@
     <string name="extra_request_form_room">Room:</string>
     <string name="extra_request_form_slot">Slot:</string>
     <string name="extra_request_form_length">Length:</string>
-    <string name="extra_request_form_classes">Classes:</string>
+    <string name="extra_request_form_classes">Class:</string>
     <string name="extra_request_form_general_reason">General Reason:</string>
     <string name="extra_request_form_message">Message:</string>
     <string name="extra_request_form_message_hint">Enter your message...</string>
     <string name="extra_request_form_title">Extra Request Form</string>
 
 
-
+    <string name="default_text_room_spinner">Select A Room Please</string>
     <string-array name="Rooms">
         <item>Room A</item>
         <item>Room B</item>
@@ -65,14 +65,22 @@
         <item>Room I</item>
         <item>Room J</item>
     </string-array>
+
+    <string name="default_text_slot_spinner">Select A Slot Please</string>
     <string-array name="Slots">
-    <item>Slot 1</item>
-    <item>Slot 2</item>
-    <item>Slot 3</item>
-    <item>Slot 4</item>
-    <item>Slot 5</item>
-    <item>Slot 6</item>
-    <item>Slot 7</item>
-    <item>Slot 8</item>
-</string-array>
+        <item>Slot 1</item>
+        <item>Slot 2</item>
+        <item>Slot 3</item>
+        <item>Slot 4</item>
+        <item>Slot 5</item>
+        <item>Slot 6</item>
+        <item>Slot 7</item>
+        <item>Slot 8</item>
+    </string-array>
+
+    <string name="default_text_no_days_available">No Days Available</string>
+    <string-array name="no_days_available_array">
+        <item>No Days Available</item>
+    </string-array>
+
 </resources>

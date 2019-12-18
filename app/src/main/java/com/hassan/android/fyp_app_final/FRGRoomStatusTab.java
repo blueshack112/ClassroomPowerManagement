@@ -1,7 +1,6 @@
 package com.hassan.android.fyp_app_final;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +47,7 @@ public class FRGRoomStatusTab extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_frgroom_status_tab, container, false);
         context = container.getContext();
-        RoomSelectionSpinnerAdapter spinnerAdapter = new RoomSelectionSpinnerAdapter(context, android.R.layout.simple_spinner_dropdown_item);
+        SelectionSpinnerAdapter spinnerAdapter = new SelectionSpinnerAdapter(context, android.R.layout.simple_spinner_dropdown_item);
         roomSpinner = view.findViewById(R.id.spinner_select_room);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roomSpinner.setAdapter(spinnerAdapter);

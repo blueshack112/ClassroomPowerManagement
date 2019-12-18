@@ -41,7 +41,7 @@ import java.util.Map;
 public class FRGControlOverrideTab extends Fragment {
 
     private Spinner roomSelectionSpinner;
-    private RoomSelectionSpinnerAdapter roomSelectionSpinnerAdapter;
+    private SelectionSpinnerAdapter selectionSpinnerAdapter;
     private RadioGroup scheduleSelection;
     private ConstraintLayout scheduleConstraintGroup;
     private final Calendar myCalendar = Calendar.getInstance();
@@ -83,10 +83,10 @@ public class FRGControlOverrideTab extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_frgcontrol_override_tab, container, false);
 
         //Room selection setup
-        roomSelectionSpinnerAdapter = new RoomSelectionSpinnerAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item);
+        selectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item);
         roomSelectionSpinner = view.findViewById(R.id.override_spinner_select_room);
-        roomSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        roomSelectionSpinner.setAdapter(roomSelectionSpinnerAdapter);
+        selectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        roomSelectionSpinner.setAdapter(selectionSpinnerAdapter);
 
         //Schedule type selection setup
         scheduleSelection = view.findViewById(R.id.override_rb_shcedule);

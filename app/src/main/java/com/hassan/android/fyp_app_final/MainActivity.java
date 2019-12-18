@@ -294,7 +294,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Get Current Day of week
+    // Get Current Day of week
+    // TODO: Run this code and provide documentation as to how the days are being shown
     public static int getCurrentDayOfWeek() {
         return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
     }
