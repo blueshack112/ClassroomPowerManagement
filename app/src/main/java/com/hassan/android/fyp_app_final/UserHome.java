@@ -64,12 +64,13 @@ public class UserHome extends AppCompatActivity {
 
         //initialize fragment based on account type
         if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
-            Fragment temp = new FRGTeacherScheduleList();
-            ((FRGTeacherScheduleList) temp).setUserID(userID);
+            FRGTeacherScheduleList temp = new FRGTeacherScheduleList();
+            temp.setUserID(userID);
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
         } else if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_HOD)) {
-            Fragment temp = new FRGHODTabPages();
+            FRGHODTabPages temp = new FRGHODTabPages();
+            temp.setUserID(userID);
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
         }

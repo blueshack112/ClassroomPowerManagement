@@ -48,4 +48,18 @@ public class SelectionSpinnerAdapter extends ArrayAdapter<String> {
         }
         return super.getDropDownView(position, convertView, parent);
     }
+
+    /**
+     * This function will set the options of the spinner to a new set of options and default option
+     * @param data: String array: new array of options
+     * @param defaultOption: String: default option for this set
+     */
+    public void newOptions(String [] data, String defaultOption) {
+        this.options = data;
+        firstOption = this.options[0];
+        this.defaultOption = defaultOption;
+        this.options[0] = this.defaultOption;
+        this.isFirstTime = true;
+        notifyDataSetChanged();
+    }
 }

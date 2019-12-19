@@ -54,7 +54,6 @@ public class FRGTeacherScheduleList extends Fragment {
 
     /**
      * Funciton that sets the user ID of the main class
-     *
      * @param userID: String: user ID
      */
     public void setUserID(String userID) {
@@ -62,7 +61,7 @@ public class FRGTeacherScheduleList extends Fragment {
     }
 
     /**
-     * Cuntion used to refer to the xml of list item for the recycler to show
+     * Function used to refer to the xml of list item for the recycler to show
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +69,7 @@ public class FRGTeacherScheduleList extends Fragment {
     }
 
     /**
-     * Function called to setup the whole layout, get nencessary data and bind OnClickListeners
+     * Function called to setup the whole layout, get necessary data and bind OnClickListeners
      */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

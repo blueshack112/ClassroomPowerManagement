@@ -5,6 +5,8 @@
     <string name="action_menu_logout">Log Out</string>
     <string name="room_status_heading">Check Room Status</string>
     <string name="default_text_course_spinner">Select A Course Please</string>
+    <string name="default_text_class_spinner">Select A Class Please</string>
+    <string name="default_text_message_editbox">Please write a short reason for this request...</string>
     <string name="teacher_schedule_list_heading">Your Classes: </string>
     <string name="room_status_attribute_date">Date: </string>
     <string name="room_status_attribute_room">Room Name: </string>
@@ -81,6 +83,22 @@
     <string name="default_text_no_days_available">No Days Available</string>
     <string-array name="no_days_available_array">
         <item>No Days Available</item>
+    </string-array>
+
+    <string name="default_text_general_reason_spinner">Select A Reason Please</string>
+    <string-array name="general_reason_spinner_cancel_class">
+        <item>I am sick</item>
+        <item>Syllabus has been completed</item>
+        <item>I will be in a meeting</item>
+        <item>I will be substituting another class</item>
+        <item>An extra class has been conducted</item>
+    </string-array>
+    <string-array name="general_reason_spinner_extra_class">
+        <item>Credit hours are not complete</item>
+        <item>A recent class was missed</item>
+        <item>I need to cover syllabus</item>
+        <item>I need to cover for a coming holiday</item>
+        <item>Many students' attendance is low</item>
     </string-array>
 
 </resources>

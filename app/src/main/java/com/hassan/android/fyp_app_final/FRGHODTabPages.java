@@ -12,17 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+//TODO: documentation
 
 public class FRGHODTabPages extends Fragment {
     private TabLayout tabLayout;
     private HODPagerAdapter viewPagerAdapter;
     private ViewPager viewPager;
+    private String userID;
     public FRGHODTabPages() {
         super();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        userID = "";
         View view = inflater.inflate(R.layout.fragment_frghodtab_pages, container, false);
         return view;
     }
@@ -36,5 +39,9 @@ public class FRGHODTabPages extends Fragment {
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void setUserID (String userID) {
+        this.userID = userID;
     }
 }

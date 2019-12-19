@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
+// TODO: Documentation
 public class FRGRoomStatusTab extends Fragment {
     private Context context;
     private Spinner roomSpinner;

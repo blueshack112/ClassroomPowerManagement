@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
+//TODO: Proper documentation
 @TargetApi(26)
 public class MainActivity extends AppCompatActivity {
 
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         idText = findViewById(R.id.tin_id);
         passwordText = findViewById(R.id.tin_password);
         forgotPassword = findViewById(R.id.tv_forgot_password);
-
 
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,13 +293,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Get Current Day of week
-    // TODO: Run this code and provide documentation as to how the days are being shown
+    /**
+     * Funciton that return the day of week such that monday is 1 and friday is 5
+     * @return int: 1-5
+     */
     public static int getCurrentDayOfWeek() {
         return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
     }
 
-    //Get current slot
+    /**
+     * Function that return day of week such that monday is 0 and friday is 4
+     * @return int: 0-4
+     */
+    public static int getCurrentDayOfWeekAsIndex() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+    }
+
+    /**
+     * Function that calculates which slot it is and returns as an int
+     * @return int: 0-7: 0 is no slot while 1-7 are slots
+     */
     public static int getCurrentSlot() {
         LocalTime currentTime = LocalTime.now();
         if (currentTime.isAfter(SLOT_TIMINGS_1) && currentTime.isBefore(SLOT_TIMINGS_2)) {
