@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView idText, passwordText;
     private TextView forgotPassword;
 
-    //Connection URL
-    public static final String URL = "192.168.18.4";
+    //Connection URL 192.168.18.4
+    public static final String URL = "192.168.18.56:4444";
 
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";

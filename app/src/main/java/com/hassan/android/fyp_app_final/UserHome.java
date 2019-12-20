@@ -2,6 +2,7 @@ package com.hassan.android.fyp_app_final;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
@@ -14,7 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
+// TODO: documentation
 public class UserHome extends AppCompatActivity {
 
     //Main variables
@@ -92,13 +93,22 @@ public class UserHome extends AppCompatActivity {
             onLogOutClicked();
 
         else if (userType == MainActivity.ACCOUNT_TYPE_TEACHER && item.getItemId() == R.id.request)
+            Log.d("itwasgrabbed", "onOptionsItemSelected: ");
             onRequestClicked();
         return super.onOptionsItemSelected(item);
     }
 
     //functionality for request button
     public void onRequestClicked() {
-        //TODO: complete request dialog form and implement here...
+        // Initialize the form dialog and add userID into its arguments
+        DialogFragment formDialog = new ExtraRequestFormDialog();
+        Bundle userIDBundle = new Bundle();
+        userIDBundle.putString("userID", userID);
+        formDialog.setArguments(userIDBundle);
+
+        // Show the dialog
+        formDialog.show(getSupportFragmentManager(), "formDialog");
+        Log.d("formdebug", "Form shown...");
     }
 
     //functionality for logout button

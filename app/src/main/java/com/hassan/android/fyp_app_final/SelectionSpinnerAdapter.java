@@ -31,7 +31,7 @@ public class SelectionSpinnerAdapter extends ArrayAdapter<String> {
      * @param defaultOption: String: text to show for the first time
      */
     public SelectionSpinnerAdapter(Context context, int resource, String [] data, String defaultOption) {
-        super(context, resource, context.getResources().getStringArray(R.array.Rooms));
+        super(context, resource);
         this.context = context;
         this.options = data;
         firstOption = options[0];
@@ -60,6 +60,6 @@ public class SelectionSpinnerAdapter extends ArrayAdapter<String> {
         this.defaultOption = defaultOption;
         this.options[0] = this.defaultOption;
         this.isFirstTime = true;
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 }

@@ -36,7 +36,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
+// TODO: Documentation
 
 public class FRGTeacherScheduleList extends Fragment {
 
@@ -235,7 +235,7 @@ public class FRGTeacherScheduleList extends Fragment {
 
                 // For every course item present inside the courses list...
                 for (int i = 0; i < courses.size(); i++) {
-                    Log.d("CourseCondition...", courses.get(i).getCourseName() + "\t" + Integer.toString(courses.get(i).getAttendance()) + "\t" + Boolean.toString(courses.get(i).isAttendanceAdded()));
+                    // Log.d("CourseCondition...", courses.get(i).getCourseName() + "\t" + Integer.toString(courses.get(i).getAttendance()) + "\t" + Boolean.toString(courses.get(i).isAttendanceAdded()));
                     // Check if the course's time to get active has arrived and set its active
                     // status variable to true
                     if (courses.get(i).isTime()) {

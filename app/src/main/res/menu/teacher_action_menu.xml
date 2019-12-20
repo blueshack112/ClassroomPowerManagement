@@ -4,7 +4,7 @@
     <item
         android:id="@+id/request"
         android:icon="@drawable/extra_request"
-        android:title="@string/action_menu_logout"
+        android:title="@string/action_menu_request"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/logout"

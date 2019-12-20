@@ -56,8 +56,10 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -104,7 +106,20 @@ public class ExtraRequestFormDialog extends DialogFragment {
     private EditText messageEditText;
     private Button submitbutton;
 
-    //TODO: get user ID here somehow
+    private boolean allSetup;
+    private String userID;
+
+
+    /**
+     * This function is how the activity will send arguments to the object.
+     * Mainly, we need this function to get the userID from the outside activity.
+     * @param args: Bundle: must contain a string by the name "userID"
+     */
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        userID = args.getString("userID", "None");
+    }
 
     @NonNull
     @Override
@@ -121,9 +136,13 @@ public class ExtraRequestFormDialog extends DialogFragment {
         formView = inflater.inflate(R.layout.dialog_extra_request_form, null);
 
         //Creating functionality for dialog objects
+        allSetup = false;
         setupViews();
 
-        return super.onCreateDialog(savedInstanceState);
+        // Set the builder's view to your view that has been setup now
+        builder.setView(formView);
+
+        return builder.create();
     }
 
     /**
@@ -154,6 +173,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         setupLengthNumberPicker();
         setupClassSelectionSpinner();
         setupMessageEditText();
+        while (!allSetup) {}
         setupSubmitButton();
     }
 
@@ -224,7 +244,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         int currentDay = MainActivity.getCurrentDayOfWeek();
 
         // if today is friday...
-        if (currentDay == 4) {
+        if (currentDay == 4 || currentDay == 5 || currentDay == 6) {
             // Initialize the array as the error message
             // TODO: make sure that the submit button checks for this error and doesnt let the request go if today is friday
             daySelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.no_days_available_array), getContext().getResources().getString(R.string.default_text_no_days_available));
@@ -369,6 +389,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      */
     public void setupMessageEditText () {
         messageEditText.setHint(getContext().getResources().getString(R.string.default_text_message_editbox));
+        allSetup = true;
     }
 
     /**
@@ -376,9 +397,6 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * The API will check if the date and slot that is being asked by the user is available or not all other verifications will be done here
      */
     public void setupSubmitButton() {
-        // Set user ID
-        String userID = "";
-
         // Get the course name
         String course = courseSelectionSpinner.getSelectedItem().toString();
         // Check if the selected item is default or not
