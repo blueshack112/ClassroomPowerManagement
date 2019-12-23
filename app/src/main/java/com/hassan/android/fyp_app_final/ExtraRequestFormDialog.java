@@ -497,12 +497,39 @@ public class ExtraRequestFormDialog extends DialogFragment {
         if (requestType == R.id.extra_request_rb_cancel_class) {
             String type = "CANCEL";
 
-            // get the class that the user wants to cancel
+            // Get the class that the user wants to cancel
             chosenClass = classSelectionSpinner.getSelectedItem().toString();
             if (chosenClass.equals(getContext().getResources().getString(R.string.default_text_class_spinner))) {
                 Toast.makeText(getContext(), "Please select the class that you want to cancel!", Toast.LENGTH_SHORT).show();
                 return false;
             }
+
+            // ChosenClass original format: 1001 | Monday | 1st slot | 2 sessions
+            // Get course id
+            int courseID = Integer.parseInt(chosenClass.substring(0,5));
+
+            // Get day
+            chosenClass = chosenClass.substring(7);
+            String day = chosenClass.substring(0, chosenClass.indexOf(" | "));
+            // Convert day into respective integer
+            if (day.equals("Monday"))
+                dayOfWeek = 1;
+            else if (day.equals("Tuesday"))
+                dayOfWeek = 2;
+            else if (day.equals("Wednesday"))
+                dayOfWeek = 3;
+            else if (day.equals("Thursday"))
+                dayOfWeek = 4;
+            else if (day.equals("Friday"))
+                dayOfWeek = 5;
+
+            // Get slot
+            chosenClass = chosenClass.substring(chosenClass.indexOf("|")+2);
+            slot = Integer.parseInt(Character.toString(chosenClass.charAt(0)));
+
+            // Get class length
+            chosenClass = chosenClass.substring(chosenClass.indexOf("|")+2);
+            length = Integer.parseInt(Character.toString(chosenClass.charAt(0)));
 
             //TODO: send the data to the databasem
         } else {

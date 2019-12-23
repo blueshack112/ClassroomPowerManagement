@@ -71,6 +71,7 @@ public class CourseModel {
         String daySlotLength = "";
         cal.set(Calendar.DAY_OF_WEEK, Integer.parseInt(mDay) + 1);
 
+        //Monday | 1st slot | 2 sessions
         daySlotLength += cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
         daySlotLength += " | " + mSlot;
         if (Integer.parseInt(mSlot) == 1)
