@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView idText, passwordText;
     private TextView forgotPassword;
 
-    //Connection URL 192.168.18.4
-    public static final String URL = "192.168.18.56:4444";
+    //Connection URL 192.168.18.56:4444
+    public static final String URL = "192.168.18.4";
 
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         idText = findViewById(R.id.tin_id);
         passwordText = findViewById(R.id.tin_password);
         forgotPassword = findViewById(R.id.tv_forgot_password);
+
+        //TODO: Remove this debug part
+        idText.setText("1001");
+        passwordText.setText("Hamdard123");
 
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override

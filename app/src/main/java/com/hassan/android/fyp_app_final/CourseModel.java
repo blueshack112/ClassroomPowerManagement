@@ -1,5 +1,7 @@
 package com.hassan.android.fyp_app_final;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -152,7 +154,6 @@ public class CourseModel {
     public void setAttendanceAdded(boolean attendanceAdded) {
         mAttendanceAdded = attendanceAdded;
     }
-
 
     /**
      * Function that compares the slot of the course and checks to see if the the time fo the course

@@ -3,10 +3,12 @@ package com.hassan.android.fyp_app_final;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SelectionSpinnerAdapter extends ArrayAdapter<String> {
     private Context context;
@@ -14,52 +16,39 @@ public class SelectionSpinnerAdapter extends ArrayAdapter<String> {
     private String defaultOption;
     private String firstOption;
     private boolean isFirstTime;
+    private boolean isSecondTime;
 
     public SelectionSpinnerAdapter(Context context, int resource) {
         super(context, resource, context.getResources().getStringArray(R.array.Rooms));
         this.context = context;
         this.options = context.getResources().getStringArray(R.array.Rooms);
-        firstOption = options[0];
-        defaultOption = context.getResources().getString(R.string.default_text_room_spinner);
-        options[0] = defaultOption;
-        isFirstTime = true;
+    }
+
+    /**
+     * Override for the default constructor. Call this one if you want custom options and pass data as string array
+     * @param data: String []: custom set of data
+     * @param defaultOption: String: text to show for the first time
+     */
+    public SelectionSpinnerAdapter(Context context, int resource, String [] data, String defaultOption) {
+        super(context, resource, data);
+        this.context = context;
+        this.options = data;
     }
 
     /**
      * Override for the default constructor. Call this one if you want custom options
-     * @param data: String array: custom set of data
+     * @param data: ArraList<String>: custom set of data
      * @param defaultOption: String: text to show for the first time
      */
-    public SelectionSpinnerAdapter(Context context, int resource, String [] data, String defaultOption) {
-        super(context, resource);
+    public SelectionSpinnerAdapter(Context context, int resource, ArrayList<String> data, String defaultOption) {
+        super(context, resource, data);
         this.context = context;
-        this.options = data;
-        firstOption = options[0];
-        this.defaultOption = defaultOption;
-        options[0] = this.defaultOption;
-        isFirstTime = true;
+        this.options = new String[data.size()];
+        this.options = data.toArray(this.options);
     }
-
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        if (isFirstTime) {
-            options[0] = firstOption;
-            isFirstTime = false;
-        }
         return super.getDropDownView(position, convertView, parent);
     }
 
-    /**
-     * This function will set the options of the spinner to a new set of options and default option
-     * @param data: String array: new array of options
-     * @param defaultOption: String: default option for this set
-     */
-    public void newOptions(String [] data, String defaultOption) {
-        this.options = data;
-        firstOption = this.options[0];
-        this.defaultOption = defaultOption;
-        this.options[0] = this.defaultOption;
-        this.isFirstTime = true;
-        this.notifyDataSetChanged();
-    }
 }

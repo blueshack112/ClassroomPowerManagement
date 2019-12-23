@@ -340,4 +340,12 @@ public class FRGTeacherScheduleList extends Fragment {
             return course;
         }
     }
+
+    /**
+     * Function that returns the courses of the teacher to whoever asks for it
+     * @return ArraList<CourseModel>: set of courses of the user
+     */
+    public ArrayList<CourseModel> getCourses() {
+        return courses;
+    }
 }

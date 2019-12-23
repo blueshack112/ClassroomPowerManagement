@@ -15,21 +15,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+
 // TODO: documentation
 public class UserHome extends AppCompatActivity {
 
-    //Main variables
+    // Main variables
     private String userType;
     private String userFirstNname;
     private String userLastNname;
     private String userDesignation;
     private String userID;
 
-    //UI elements
+    // UI elements
     private LinearLayoutCompat fragmentHolder;
     private TextView usernameTextVeiw;
     private TextView userIDTextVeiw;
     private TextView userDesignationTextVeiw;
+
+    // Fragments
+    FRGTeacherScheduleList teacherScheduleListFragment;
 
 
     @Override
@@ -65,9 +71,9 @@ public class UserHome extends AppCompatActivity {
 
         //initialize fragment based on account type
         if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
-            FRGTeacherScheduleList temp = new FRGTeacherScheduleList();
-            temp.setUserID(userID);
-            transaction.add(R.id.main_fragment_space, temp);
+            teacherScheduleListFragment = new FRGTeacherScheduleList();
+            teacherScheduleListFragment.setUserID(userID);
+            transaction.add(R.id.main_fragment_space, teacherScheduleListFragment);
             transaction.commit();
         } else if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_HOD)) {
             FRGHODTabPages temp = new FRGHODTabPages();
@@ -99,12 +105,30 @@ public class UserHome extends AppCompatActivity {
     }
 
     //functionality for request button
-    public void onRequestClicked() {
+    private void onRequestClicked() {
         // Initialize the form dialog and add userID into its arguments
         DialogFragment formDialog = new ExtraRequestFormDialog();
-        Bundle userIDBundle = new Bundle();
-        userIDBundle.putString("userID", userID);
-        formDialog.setArguments(userIDBundle);
+        Bundle bundle = new Bundle();
+        ArrayList<CourseModel> courses = teacherScheduleListFragment.getCourses();
+
+        // Putting userID
+        bundle.putString("userID", userID);
+
+        // Putting course info
+        ArrayList<String> courseNames = new ArrayList<>();
+        ArrayList<String> courseTimes = new ArrayList<>();
+        ArrayList<String> courseIDs = new ArrayList<>();
+
+        for (int i = 0; i<courses.size(); i++) {
+            courseIDs.add(courses.get(i).getCourseID());
+            courseNames.add(courses.get(i).getCourseName());
+            courseTimes.add(courses.get(i).getCourseDaySlot());
+        }
+        bundle.putStringArrayList("courseIDs", courseIDs);
+        bundle.putStringArrayList("courseNames", courseNames);
+        bundle.putStringArrayList("courseTimes", courseTimes);
+
+        formDialog.setArguments(bundle);
 
         // Show the dialog
         formDialog.show(getSupportFragmentManager(), "formDialog");
@@ -112,7 +136,7 @@ public class UserHome extends AppCompatActivity {
     }
 
     //functionality for logout button
-    public void onLogOutClicked() {
+    private void onLogOutClicked() {
         AlertDialog.Builder logoutAlert = new AlertDialog.Builder(this);
         logoutAlert.setTitle("Confirm Logout");
         logoutAlert.setMessage("Are you sure you want to logout?");
