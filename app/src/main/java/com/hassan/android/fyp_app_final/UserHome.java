@@ -6,7 +6,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -27,6 +26,7 @@ public class UserHome extends AppCompatActivity {
     private String userLastNname;
     private String userDesignation;
     private String userID;
+    private static boolean listDestroyed = false;
 
     // UI elements
     private LinearLayoutCompat fragmentHolder;
@@ -70,17 +70,21 @@ public class UserHome extends AppCompatActivity {
             userDesignationTextVeiw.setText("Professor / HOD");
 
         //initialize fragment based on account type
-        if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
+        userType = mainIntnet.getStringExtra("userType");
+        if (userType.equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
             teacherScheduleListFragment = new FRGTeacherScheduleList();
             teacherScheduleListFragment.setUserID(userID);
             transaction.add(R.id.main_fragment_space, teacherScheduleListFragment);
             transaction.commit();
-        } else if (mainIntnet.getStringExtra("userType").equals(MainActivity.ACCOUNT_TYPE_HOD)) {
+        } else if (userType.equals(MainActivity.ACCOUNT_TYPE_HOD)) {
             FRGHODTabPages temp = new FRGHODTabPages();
             temp.setUserID(userID);
             transaction.add(R.id.main_fragment_space, temp);
             transaction.commit();
         }
+
+        // Set the listDestroyed variable to false
+        listDestroyed = false;
     }
 
     @Override
@@ -95,12 +99,14 @@ public class UserHome extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.logout)
+        Log.d("formdebug", "Form showing..." + item.getItemId() + "\t" + R.id.request + "\t" + userType);
+        if (item.getItemId() == R.id.logout) {
             onLogOutClicked();
-
-        else if (userType == MainActivity.ACCOUNT_TYPE_TEACHER && item.getItemId() == R.id.request)
-            Log.d("itwasgrabbed", "onOptionsItemSelected: ");
+        }
+        else if (userType.equals(MainActivity.ACCOUNT_TYPE_TEACHER) && item.getItemId() == R.id.request) {
+            Log.d("formdebug", "Form showing...");
             onRequestClicked();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -143,6 +149,7 @@ public class UserHome extends AppCompatActivity {
         logoutAlert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                listDestroyed = true;
                 Intent mainActivityIntent = new Intent(UserHome.this, MainActivity.class);
                 startActivity(mainActivityIntent);
             }
@@ -154,5 +161,13 @@ public class UserHome extends AppCompatActivity {
             }
         });
         logoutAlert.show();
+    }
+
+    /**
+     * Fucntion that will tell outside functions if the activity is listDestroyed or working
+     * @return
+     */
+    public static boolean isListDestroyed() {
+        return listDestroyed;
     }
 }

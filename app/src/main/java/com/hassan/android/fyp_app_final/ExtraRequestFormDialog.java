@@ -51,6 +51,8 @@ package com.hassan.android.fyp_app_final;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,6 +62,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
@@ -67,8 +70,20 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ExtraRequestFormDialog extends DialogFragment {
@@ -128,12 +143,12 @@ public class ExtraRequestFormDialog extends DialogFragment {
         ArrayList<String> courseTimesTemp = args.getStringArrayList("courseTimes");
 
         courseNames.add(courseIDs.get(0) + " | " + courseNamesTemp.get(0));
-        for (int i=0; i < courseIDs.size(); i++) {
+        for (int i = 0; i < courseIDs.size(); i++) {
             for (int j = 0; j < courseNames.size(); j++) {
                 // Remove duplication of names
                 if (courseNames.get(j).endsWith(courseNamesTemp.get(i))) {
                     break;
-                } else if (j == courseNames.size()-1) {
+                } else if (j == courseNames.size() - 1) {
                     courseNames.add(courseIDs.get(i) + " | " + courseNamesTemp.get(i));
                 }
             }
@@ -150,7 +165,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
+                dialogInterface.cancel();
             }
         });
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -162,17 +177,31 @@ public class ExtraRequestFormDialog extends DialogFragment {
         // Set the builder's view to your view that has been setup now
         builder.setView(formView);
 
+        // Set null positive button and create dialog
+        builder.setPositiveButton("SUBMIT", null);
+        AlertDialog returnDialog = builder.create();
 
-        builder.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+        //Manually override dialog's positive button
+        returnDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                boolean submitSuccess = submitRequest();
-                if (submitSuccess)
-                    dialog.dismiss();
+            public void onShow(final DialogInterface dialog) {
+                Button button = ((AlertDialog) dialog).getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        submitRequest(dialog, getContext());
+                    }
+                });
             }
         });
 
-        return builder.create();
+        String debugMessage = "a\n";
+        for (int i = 0; i < courseNames.size(); i++) {
+            debugMessage += "Name: " + courseNames.get(i) + "   ID: " + courseIDs.get(i) + "   Day/Slot/Length: " + courseTimes.get(i) + "\n";
+        }
+        Log.d("extraDebug", debugMessage);
+
+        return returnDialog;
     }
 
     /**
@@ -382,7 +411,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * @param chosenSlot: the slot against which the length needs to be calculated
      */
     public int getAvailableLength(int chosenSlot) {
-        chosenSlot ++;
+        chosenSlot++;
         // if the slot is right before break or end of day...
         if (chosenSlot == 4 || chosenSlot == 7) {
             // Only one credit hour can be conducted
@@ -460,9 +489,9 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * This is where all the necessary validations will be done and the API will be called and data will be send
      * The API will check if the date and slot that is being asked by the user is available or not all other verifications will be done here
      */
-    public boolean submitRequest() {
+    public boolean submitRequest(final DialogInterface dialogFragment, final Context context) {
         // Get the course name
-        String course = courseSelectionSpinner.getSelectedItem().toString();
+        final String course = courseSelectionSpinner.getSelectedItem().toString();
         // Check if the selected item is default or not
         if (course.equals(getContext().getResources().getString(R.string.default_text_course_spinner))) {
             Toast.makeText(getContext(), "Please select a course!", Toast.LENGTH_SHORT).show();
@@ -470,10 +499,10 @@ public class ExtraRequestFormDialog extends DialogFragment {
         }
 
         // Get request type
-        int requestType = requestTypeSelectionRGroup.getCheckedRadioButtonId();
+        final int requestType = requestTypeSelectionRGroup.getCheckedRadioButtonId();
 
         // Get the request general reason
-        String generalReason = generalReasonSelectionSpinner.getSelectedItem().toString();
+        final String generalReason = generalReasonSelectionSpinner.getSelectedItem().toString();
         // Check if the general reason is set to default or not
         if (generalReason.equals(getContext().getResources().getString(R.string.default_text_general_reason_spinner))) {
             Toast.makeText(getContext(), "Please select a general reason!", Toast.LENGTH_SHORT).show();
@@ -495,7 +524,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
         // If it is a cancel class request, deal accordingly
         // Else it is an extra class request, deal accordingly
         if (requestType == R.id.extra_request_rb_cancel_class) {
-            String type = "CANCEL";
+            final String type = "CANCEL";
 
             // Get the class that the user wants to cancel
             chosenClass = classSelectionSpinner.getSelectedItem().toString();
@@ -506,7 +535,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
             // ChosenClass original format: 1001 | Monday | 1st slot | 2 sessions
             // Get course id
-            int courseID = Integer.parseInt(chosenClass.substring(0,5));
+            final int courseID = Integer.parseInt(chosenClass.substring(0, 4));
 
             // Get day
             chosenClass = chosenClass.substring(7);
@@ -524,19 +553,96 @@ public class ExtraRequestFormDialog extends DialogFragment {
                 dayOfWeek = 5;
 
             // Get slot
-            chosenClass = chosenClass.substring(chosenClass.indexOf("|")+2);
+            chosenClass = chosenClass.substring(chosenClass.indexOf("|") + 2);
             slot = Integer.parseInt(Character.toString(chosenClass.charAt(0)));
 
             // Get class length
-            chosenClass = chosenClass.substring(chosenClass.indexOf("|")+2);
+            chosenClass = chosenClass.substring(chosenClass.indexOf("|") + 2);
             length = Integer.parseInt(Character.toString(chosenClass.charAt(0)));
 
-            //TODO: send the data to the databasem
+            //Start calling extraRequest.php and check if the reuest could be submitted
+            // URL of the API
+            String url = "http://" + MainActivity.URL + "/AreebaFYP/extraRequest.php";
+
+            //Setting up response handler
+            Response.Listener listener = new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        // Converting the response into JSON object
+                        JSONObject extraResponse = new JSONObject(response.toString());
+
+                        // If even a single course item arrived in the response
+                        if (extraResponse.getBoolean("successful")) {
+                            Toast.makeText(getContext(), "Your cancel request has been successfully submitted!", Toast.LENGTH_SHORT).show();
+                            dialogFragment.dismiss();
+                            return;
+                        } else {
+                            String error = extraResponse.getString("errorCode");
+                            if (error.equals("notexist")) {
+                                Toast.makeText(context, "The class you requested to cancel does not exist!", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else if (error.equals("alreadycancelled")) {
+                                Toast.makeText(context, "The same request has been submitted earlier!", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else if (error.equals("unknown")) {
+                                Toast.makeText(context, "Could not submit your request at this time. Try again later...", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                }
+            };
+
+            //Initialize request string with POST method
+            final int finalDayOfWeek = dayOfWeek;
+            final int finalSlot = slot;
+            final int finalLength = length;
+            final String finalMessage = message;
+            StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> param = new HashMap<>();
+                    // Put request details in the data set
+                    param.put("userID", userID);
+                    param.put("courseID", Integer.toString(courseID));
+                    param.put("dayOfWeek", Integer.toString(finalDayOfWeek));
+                    param.put("slot", Integer.toString(finalSlot));
+                    param.put("length", Integer.toString(finalLength));
+                    param.put("requestType", type);
+                    param.put("generalReason", generalReason);
+                    param.put("message", finalMessage);
+                    return param;
+                }
+            };
+
+            //Execute request
+            Volleyton.getInstance(getContext()).addToRequestQueue(request);
+
         } else {
-            String type = "EXTRA";
+            final String type = "EXTRA";
             final String roomSelection = roomSelectionSpinner.getSelectedItem().toString();
             char roomChar = roomSelection.charAt(roomSelection.length() - 1);
             room = Integer.toString(1000 + (roomChar - 64));
+
+            // Get the class that the user wants to request extra of
+            chosenClass = classSelectionSpinner.getSelectedItem().toString();
+            if (chosenClass.equals(getContext().getResources().getString(R.string.default_text_class_spinner))) {
+                Toast.makeText(getContext(), "Please select the class that you want to cancel!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            // ChosenClass original format: 1001 | Monday | 1st slot | 2 sessions
+            // Get course id
+            final int courseID = Integer.parseInt(chosenClass.substring(0, 4));
 
             // Calculate the day that was selected in this pattern: Moday-1, Friday-5
             String day = daySelectionSpinner.getSelectedItem().toString();
@@ -557,13 +663,78 @@ public class ExtraRequestFormDialog extends DialogFragment {
                 return false;
             }
 
-            // The slots are alotted from 1-7. So we can get item position and add 1 to it.
+            // The slots are allotted from 1-7. So we can get item position and add 1 to it.
             slot = slotSelectionSpinner.getSelectedItemPosition() + 1;
 
             // Get the length of the class
             length = lengthSelectionNumberPicker.getValue();
 
-            //TODO: send the data to the database
+            //Start calling extraRequest.php and check if the reuest could be submitted
+            // URL of the API
+            String url = "http://" + MainActivity.URL + "/AreebaFYP/extraRequest.php";
+            //Setting up response handler
+            Response.Listener listener = new Response.Listener() {
+                @Override
+                public void onResponse(Object response) {
+                    try {
+                        // Converting the response into JSON object
+                        JSONObject extraResponse = new JSONObject(response.toString());
+
+                        // If even a single course item arrived in the response
+                        if (extraResponse.getBoolean("successful")) {
+                            Toast.makeText(getContext(), "Your extra request has been successfully submitted!", Toast.LENGTH_SHORT).show();
+                            dialogFragment.dismiss();
+                            return;
+                        } else {
+                            String error = extraResponse.getString("errorCode");
+                            if (error.equals("slotbusy")) {
+                                Toast.makeText(context, "The time you selected was not available!", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else if (error.equals("alreadyrequested")) {
+                                Toast.makeText(context, "The same request has been submitted earlier!", Toast.LENGTH_SHORT).show();
+                                return;
+                            } else if (error.equals("unknown")) {
+                                Toast.makeText(context, "Could not submit your request at this time. Try again later...", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                }
+            };
+
+            //Initialize request string with POST method
+            final int finalDayOfWeek = dayOfWeek;
+            final int finalSlot = slot;
+            final int finalLength = length;
+            final String finalMessage = message;
+            final String finalRoom = room;
+            StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> param = new HashMap<>();
+                    // Put request details in the data set
+                    param.put("userID", userID);
+                    param.put("courseID", Integer.toString(courseID));
+                    param.put("roomID", finalRoom);
+                    param.put("dayOfWeek", Integer.toString(finalDayOfWeek));
+                    param.put("slot", Integer.toString(finalSlot));
+                    param.put("length", Integer.toString(finalLength));
+                    param.put("requestType", type);
+                    param.put("generalReason", generalReason);
+                    param.put("message", finalMessage);
+                    return param;
+                }
+            };
+            //Execute request
+            Volleyton.getInstance(getContext()).addToRequestQueue(request);
         }
         return true;
     }

@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.tv_forgot_password);
 
         //TODO: Remove this debug part
-        idText.setText("1001");
-        passwordText.setText("Hamdard123");
+        idText.setText("1012");
+        passwordText.setText("HamdardHOD123");
 
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                         Response.ErrorListener errorListener = new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Log.d("XXXXXXXXXXXXXXXXXX", "Error");
                                 error.printStackTrace();
                             }
                         };
@@ -185,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
                         boolean passwordCorrect = false;
                         String accountType = "";
                         try {
-                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show();
                             JSONObject authResponse = new JSONObject(response.toString());
                             boolean userFound = authResponse.getBoolean("idFound");
 
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         String localizedMessage = error.getLocalizedMessage();
                         if (localizedMessage != null)
-                            Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                            Log.d("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
                         else
                             Toast.makeText(MainActivity.this, "Check you internet connection and try again.", Toast.LENGTH_LONG).show();
                     }

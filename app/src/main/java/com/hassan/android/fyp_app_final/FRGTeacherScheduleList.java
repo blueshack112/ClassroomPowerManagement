@@ -54,6 +54,7 @@ public class FRGTeacherScheduleList extends Fragment {
 
     /**
      * Funciton that sets the user ID of the main class
+     *
      * @param userID: String: user ID
      */
     public void setUserID(String userID) {
@@ -84,7 +85,6 @@ public class FRGTeacherScheduleList extends Fragment {
         updateList = new ListUpdater();
         updateList.execute("");
 
-
         final String temp = userID;
 
         //Start calling schedule data and run the dialog so that user wont do anything
@@ -114,7 +114,7 @@ public class FRGTeacherScheduleList extends Fragment {
 
                             // Add the course model to the dataset
                             courses.add(new CourseModel(tempObject.getString("courseName"), tempObject.getString("dayOfWeek"), tempObject.getString("slot"), tempObject.getString("classLength"), tempObject.getString("roomID"), tempObject.getString("courseID"), "-1"));
-                            checkIfAttendanceUpdated(courses.size()-1, tempObject.getString("roomID"), tempObject.getString("courseID"));
+                            checkIfAttendanceUpdated(courses.size() - 1, tempObject.getString("roomID"), tempObject.getString("courseID"));
                             adapter.notifyDataSetChanged();
                         }
                     } else {
@@ -152,7 +152,8 @@ public class FRGTeacherScheduleList extends Fragment {
 
     /**
      * Funcitno to check if the attendance of the current course has been udpated in the database
-     * @param roomID: room id of the course
+     *
+     * @param roomID:   room id of the course
      * @param courseID: course id of the course
      * @return int: -1 if the attendance is not updated and some number if the attendance is updated
      */
@@ -227,7 +228,7 @@ public class FRGTeacherScheduleList extends Fragment {
                 if (firstTime) {
                     try {
                         firstTime = false;
-                        Thread.sleep(3000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -259,6 +260,9 @@ public class FRGTeacherScheduleList extends Fragment {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+                if (UserHome.isListDestroyed()) {
+                    break;
                 }
             }
             return null;
@@ -343,9 +347,11 @@ public class FRGTeacherScheduleList extends Fragment {
 
     /**
      * Function that returns the courses of the teacher to whoever asks for it
+     *
      * @return ArraList<CourseModel>: set of courses of the user
      */
     public ArrayList<CourseModel> getCourses() {
         return courses;
     }
+
 }
