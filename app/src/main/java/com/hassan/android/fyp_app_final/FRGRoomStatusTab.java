@@ -23,6 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 // TODO: Documentation
@@ -100,13 +101,14 @@ public class FRGRoomStatusTab extends Fragment {
                                     attendanceText = "Not Yet Added";
                                 }
                             } else {
-                                dateText = "N/A";
+                                String date = Calendar.getInstance().getTime().toString();
+                                dateText = date.substring(0, date.indexOf(':')-2);
                                 roomNameText = selection;
-                                courseNameText = "N/A";
-                                teacherNameText = "N/A";
-                                sessionText = "N/A";
+                                courseNameText = "None";
+                                teacherNameText = "None";
+                                sessionText = "None";
                                 classTypeText = "Room Inactive";
-                                attendanceText = "N/A";
+                                attendanceText = "None";
                             }
                             dateTV.setText(dateText);
                             roomNameTV.setText(roomNameText);

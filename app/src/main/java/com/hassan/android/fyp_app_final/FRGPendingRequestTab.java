@@ -17,7 +17,6 @@ public class FRGPendingRequestTab extends Fragment {
 
     private RecyclerView recycler;
     private PendingRequestRecyclerAdapter adapter;
-    private ArrayList<RequestModel> requests;
 
     public FRGPendingRequestTab() {
         // Required empty public constructor
@@ -32,10 +31,8 @@ public class FRGPendingRequestTab extends Fragment {
     }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        requests= new ArrayList<RequestModel>();
-        requests.add(new RequestModel("Areeba", "FYP", "Extra Class", "No Reason")); //JUST FOR SAFETY, REMOVE IT IN FINAL RUN
         recycler = view.findViewById(R.id.pending_requests_recycler_list);
-        adapter = new PendingRequestRecyclerAdapter(getActivity(), requests);
+        adapter = new PendingRequestRecyclerAdapter(getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(layoutManager);
