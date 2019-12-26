@@ -185,8 +185,6 @@ public class FRGControlOverrideTab extends Fragment {
      */
     private void setLengthNumberPickerExtents() {
         lengthAllowed = slotSelectionSpinner.getCount() - slotSelectionSpinner.getSelectedItemPosition();
-        Log.d("DEBUG123", "Count: " + slotSelectionSpinner.getCount() + "   Selected: " +
-                          slotSelectionSpinner.getSelectedItemPosition());
         lengthSelectionNumberPicker.setMinValue(1);
         lengthSelectionNumberPicker.setMaxValue(lengthAllowed);
     }
@@ -198,11 +196,18 @@ public class FRGControlOverrideTab extends Fragment {
         openAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Loop through all the switches and turn them on
-                for (int i = 0; i < switches.size(); i++)
-                    switches.get(i).setChecked(true);
+                openAllSwitches();
             }
         });
+    }
+
+    /**
+     * To switch all the switches to on
+     */
+    private void openAllSwitches () {
+        // Loop through all the switches and turn them on
+        for (int i = 0; i < switches.size(); i++)
+            switches.get(i).setChecked(true);
     }
 
     /**
@@ -212,11 +217,18 @@ public class FRGControlOverrideTab extends Fragment {
         closeAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Loop through all the switches and turn them off
-                for (int i = 0; i < switches.size(); i++)
-                    switches.get(i).setChecked(false);
+                closeAllSwitches();
             }
         });
+    }
+
+    /**
+     * To switch all the switches to off
+     */
+    private void closeAllSwitches () {
+        // Loop through all the switches and turn them on
+        for (int i = 0; i < switches.size(); i++)
+            switches.get(i).setChecked(false);
     }
 
     /**
@@ -430,6 +442,18 @@ public class FRGControlOverrideTab extends Fragment {
      * is selected and again call the update function when 'right now' radio button is selected.
      */
     private void setupSwitches() {
-
+        scheduleSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int newSelectionID = i;
+                // If new selection is 'later' turn off all switches
+                if (newSelectionID == R.id.override_rb_later) {
+                    closeAllSwitches();
+                } else {
+                    //TODO: complete from here
+                    // Call the data from here
+                }
+            }
+        });
     }
 }
