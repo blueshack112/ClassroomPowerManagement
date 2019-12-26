@@ -21,21 +21,26 @@ package com.hassan.android.fyp_app_final;
  * - Dat Selection Spinner:
  * - The day selector will be allotted with days Monday to Friday
  * - When the request is made, the day of week string will be converted to appropriate numbers
- * - Only the remaining days in the week will be shown. For instance, if today is tuesday, then the spinner will show days from Wednesday to Friday
+ * - Only the remaining days in the week will be shown. For instance, if today is tuesday, then the spinner will
+ * show days from Wednesday to Friday
  * - The current day cannot be selected for extra class since it will be too late to handle for the HOD
- * - Since extra request can only be made for the current week, there is no date selector. This means that the date will be calculated programmatically by the app
+ * - Since extra request can only be made for the current week, there is no date selector. This means that the
+ * date will be calculated programmatically by the app
  * <p>
  * - Slot Selection Spinner
  * - The slot selection spinner will be allotted with 1-7 (slots available each day)
  * <p>
  * - Length Number Picker:
  * - The length number selector will have three numbers initially, 1, 2, and 3.
- * - If the selected slot is close to break or end of day, then the max possible length will decrease accordingly. For instance, if the slot is 3, lengths 1 and 2 will b show as break occurs after 4th session and class can't continue to the 3rd hour.
+ * - If the selected slot is close to break or end of day, then the max possible length will decrease
+ * accordingly. For instance, if the slot is 3, lengths 1 and 2 will b show as break occurs after 4th session
+ * and class can't continue to the 3rd hour.
  * <p>
  * - Class Selection Spinner:
  * - The class selection spinner is for cancelling a class
  * - It will be allotted by the classes that the teacher has this week (in week schedule table)
- * - If the class has been occurred, it will be removed from the list as the classes that are already conducted can't be cancelled. This will be achieved by comparing the current day of week to the day of week of the course
+ * - If the class has been occurred, it will be removed from the list as the classes that are already conducted
+ * can't be cancelled. This will be achieved by comparing the current day of week to the day of week of the course
  * <p>
  * - General Reason Spinner:
  * - An array of general reasons will be hard coded inside the the Strings.xml file
@@ -46,12 +51,12 @@ package com.hassan.android.fyp_app_final;
  * - It will be optional
  * <p>
  * - Send Button:
- * - The send button is where all the verifications will be made the API to load the data in the extra_schedule_table will be added.
+ * - The send button is where all the verifications will be made the API to load the data in the
+ * extra_schedule_table will be added.
  */
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -76,7 +81,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -197,7 +201,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
         String debugMessage = "a\n";
         for (int i = 0; i < courseNames.size(); i++) {
-            debugMessage += "Name: " + courseNames.get(i) + "   ID: " + courseIDs.get(i) + "   Day/Slot/Length: " + courseTimes.get(i) + "\n";
+            debugMessage += "Name: " + courseNames.get(i) + "   ID: " + courseIDs.get(i) + "   Day/Slot/Length: " +
+                            courseTimes.get(i) + "\n";
         }
         Log.d("extraDebug", debugMessage);
 
@@ -238,14 +243,16 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * The data will be loaded form the database
      */
     public void setupRoomSelectionSpinner() {
-        roomSelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item);
+        roomSelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item);
         roomSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roomSelectionSpinner.setAdapter(roomSelectionSpinnerAdapter);
     }
 
     /**
      * Function that will setup te functionality of the request type selection section.
-     * THe function will turn different constraint groups visible or invisible based on the option that was selected.
+     * THe function will turn different constraint groups visible or invisible based on the option that was
+     * selected.
      */
     public void setupRequestTypeSelectionRGroup() {
         // Create the listener for change in radio button group
@@ -262,7 +269,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
                     // Re initializing the spinner data
                     ArrayList<String> data = new ArrayList<>();
-                    data.addAll(Arrays.asList(getContext().getResources().getStringArray(R.array.general_reason_spinner_extra_class)));
+                    data.addAll(Arrays.asList(getContext().getResources().getStringArray(
+                            R.array.general_reason_spinner_extra_class)));
                     generalReasonSelectionSpinnerAdapter.clear();
                     generalReasonSelectionSpinnerAdapter.addAll(data);
                     generalReasonSelectionSpinnerAdapter.notifyDataSetChanged();
@@ -275,7 +283,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
                     // Re initializing the spinner data
                     ArrayList<String> data = new ArrayList<>();
-                    data.addAll(Arrays.asList(getContext().getResources().getStringArray(R.array.general_reason_spinner_cancel_class)));
+                    data.addAll(Arrays.asList(getContext().getResources().getStringArray(
+                            R.array.general_reason_spinner_cancel_class)));
                     generalReasonSelectionSpinnerAdapter.clear();
                     generalReasonSelectionSpinnerAdapter.addAll(data);
                     generalReasonSelectionSpinnerAdapter.notifyDataSetChanged();
@@ -292,7 +301,10 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * Function that loads up the data for the course course selection spinner
      */
     public void setupCourseSelectionSpinner() {
-        courseSelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, courseNames, getContext().getResources().getString(R.string.default_text_course_spinner));
+        courseSelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                                            courseNames, getContext().getResources().getString(
+                        R.string.default_text_course_spinner));
         courseSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         courseSelectionSpinner.setAdapter(courseSelectionSpinnerAdapter);
     }
@@ -305,13 +317,20 @@ public class ExtraRequestFormDialog extends DialogFragment {
         String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
         // Calculate the point from where the days should be shown
-        // Note that Friday cannot be shown alone. Because on Friday, there is only one day left and since we cannot select the same day for extra class, no one can request for extra class on friday. So we will show something like "Sorry, no days available for extra class this week".
+        // Note that Friday cannot be shown alone. Because on Friday, there is only one day left and since we
+        // cannot select the same day for extra class, no one can request for extra class on friday. So we will
+        // show something like "Sorry, no days available for extra class this week".
         int currentDay = MainActivity.getCurrentDayOfWeekAsIndex();
 
         // if today is friday...
         if (currentDay == 4 || currentDay == 5 || currentDay == 6) {
             // Initialize the array as the error message
-            daySelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, getContext().getResources().getStringArray(R.array.no_days_available_array), getContext().getResources().getString(R.string.default_text_no_days_available));
+            daySelectionSpinnerAdapter =
+                    new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                                                getContext().getResources()
+                                                            .getStringArray(R.array.no_days_available_array),
+                                                getContext().getResources()
+                                                            .getString(R.string.default_text_no_days_available));
             daySelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             daySelectionSpinner.setAdapter(daySelectionSpinnerAdapter);
             return;
@@ -319,8 +338,9 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
         // Slice the days array from the day after current day all the way to friday
         String[] finalDays = Arrays.copyOfRange(days, currentDay + 1, 5);
-        Log.d("currentDay", Integer.toString(currentDay));
-        daySelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, finalDays, finalDays[0]);
+        daySelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                                            finalDays, finalDays[0]);
         daySelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         daySelectionSpinner.setAdapter(daySelectionSpinnerAdapter);
     }
@@ -330,14 +350,17 @@ public class ExtraRequestFormDialog extends DialogFragment {
      */
     public void setupSlotSelectionSpinner() {
         String[] slots = {"1", "2", "3", "4", "5", "6", "7"};
-        slotSelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, slots, slots[0]);
+        slotSelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, slots,
+                                            slots[0]);
         slotSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         slotSelectionSpinner.setAdapter(slotSelectionSpinnerAdapter);
     }
 
     /**
      * Function that will calculate the slot selected by the user and alot the numbers 1,2, and 3 appropriately
-     * This function will also setup the slot selection spinner's on change function. The function is for length picker but since length picker's functionality depends on it, we are setting it up here
+     * This function will also setup the slot selection spinner's on change function. The function is for length
+     * picker but since length picker's functionality depends on it, we are setting it up here
      */
     public void setupLengthNumberPicker() {
         int length = getAvailableLength();
@@ -348,7 +371,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
         // set maximum value of the number picker as the length variable
         lengthSelectionNumberPicker.setMaxValue(length);
 
-        // Now, setup slot selection spinner's onchange method so that the number picker updates itself automatically when a new slot is chosen
+        // Now, setup slot selection spinner's onchange method so that the number picker updates itself
+        // automatically when a new slot is chosen
         slotSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -375,7 +399,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
     /**
      * Function that returns the slot that is currently selected by the slot selection spinner
-     * 1 is added to the answer because the getSelectedItemPosition returns an index (0-6) while we need real numbers (1-7)
+     * 1 is added to the answer because the getSelectedItemPosition returns an index (0-6) while we need real
+     * numbers (1-7)
      *
      * @return
      */
@@ -427,7 +452,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
     }
 
     /**
-     * Function that will bring the scheduled classes of a user from the database's week schedule table and alot then in the class selection spinner
+     * Function that will bring the scheduled classes of a user from the database's week schedule table and alot
+     * then in the class selection spinner
      * Note that this function will only bring classes of the course that is selected by the user
      * This function will also setup the on change listener of the course selector.
      * TODO: what if user wanted to schedule a cancelled class?
@@ -439,7 +465,10 @@ public class ExtraRequestFormDialog extends DialogFragment {
                 data.add(courseTimes.get(i));
             }
         }
-        classSelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, data, getContext().getResources().getString(R.string.default_text_class_spinner));
+        classSelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, data,
+                                            getContext().getResources()
+                                                        .getString(R.string.default_text_class_spinner));
         classSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         classSelectionSpinner.setAdapter(classSelectionSpinnerAdapter);
 
@@ -472,9 +501,14 @@ public class ExtraRequestFormDialog extends DialogFragment {
         // Setup with cancel class adapter
         // This will change as the request type changes
         ArrayList<String> data = new ArrayList<>();
-        data.addAll(Arrays.asList(getContext().getResources().getStringArray(R.array.general_reason_spinner_cancel_class)));
-        generalReasonSelectionSpinnerAdapter = new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, data, getContext().getResources().getString(R.string.default_text_general_reason_spinner));
-        generalReasonSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        data.addAll(Arrays.asList(
+                getContext().getResources().getStringArray(R.array.general_reason_spinner_cancel_class)));
+        generalReasonSelectionSpinnerAdapter =
+                new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, data,
+                                            getContext().getResources()
+                                                        .getString(R.string.default_text_general_reason_spinner));
+        generalReasonSelectionSpinnerAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         generalReasonSelectionSpinner.setAdapter(generalReasonSelectionSpinnerAdapter);
     }
 
@@ -487,7 +521,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
     /**
      * This is where all the necessary validations will be done and the API will be called and data will be send
-     * The API will check if the date and slot that is being asked by the user is available or not all other verifications will be done here
+     * The API will check if the date and slot that is being asked by the user is available or not all other
+     * verifications will be done here
      */
     public boolean submitRequest(final DialogInterface dialogFragment, final Context context) {
         // Get the course name
@@ -503,11 +538,6 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
         // Get the request general reason
         final String generalReason = generalReasonSelectionSpinner.getSelectedItem().toString();
-        // Check if the general reason is set to default or not
-        if (generalReason.equals(getContext().getResources().getString(R.string.default_text_general_reason_spinner))) {
-            Toast.makeText(getContext(), "Please select a general reason!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
         String message = messageEditText.getText().toString();
         // Check if the user didnt put anything in it
@@ -529,7 +559,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
             // Get the class that the user wants to cancel
             chosenClass = classSelectionSpinner.getSelectedItem().toString();
             if (chosenClass.equals(getContext().getResources().getString(R.string.default_text_class_spinner))) {
-                Toast.makeText(getContext(), "Please select the class that you want to cancel!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please select the class that you want to cancel!",
+                               Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -541,16 +572,17 @@ public class ExtraRequestFormDialog extends DialogFragment {
             chosenClass = chosenClass.substring(7);
             String day = chosenClass.substring(0, chosenClass.indexOf(" | "));
             // Convert day into respective integer
-            if (day.equals("Monday"))
+            if (day.equals("Monday")) {
                 dayOfWeek = 1;
-            else if (day.equals("Tuesday"))
+            } else if (day.equals("Tuesday")) {
                 dayOfWeek = 2;
-            else if (day.equals("Wednesday"))
+            } else if (day.equals("Wednesday")) {
                 dayOfWeek = 3;
-            else if (day.equals("Thursday"))
+            } else if (day.equals("Thursday")) {
                 dayOfWeek = 4;
-            else if (day.equals("Friday"))
+            } else if (day.equals("Friday")) {
                 dayOfWeek = 5;
+            }
 
             // Get slot
             chosenClass = chosenClass.substring(chosenClass.indexOf("|") + 2);
@@ -574,19 +606,24 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
                         // If even a single course item arrived in the response
                         if (extraResponse.getBoolean("successful")) {
-                            Toast.makeText(getContext(), "Your cancel request has been successfully submitted!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Your cancel request has been successfully submitted!",
+                                           Toast.LENGTH_SHORT).show();
                             dialogFragment.dismiss();
                             return;
                         } else {
                             String error = extraResponse.getString("errorCode");
                             if (error.equals("notexist")) {
-                                Toast.makeText(context, "The class you requested to cancel does not exist!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "The class you requested to cancel does not exist!",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             } else if (error.equals("alreadycancelled")) {
-                                Toast.makeText(context, "The same request has been submitted earlier!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "The same request has been submitted earlier!",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             } else if (error.equals("unknown")) {
-                                Toast.makeText(context, "Could not submit your request at this time. Try again later...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,
+                                               "Could not submit your request at this time. Try again later...",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -636,7 +673,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
             // Get the class that the user wants to request extra of
             chosenClass = classSelectionSpinner.getSelectedItem().toString();
             if (chosenClass.equals(getContext().getResources().getString(R.string.default_text_class_spinner))) {
-                Toast.makeText(getContext(), "Please select the class that you want to cancel!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Please select the class that you want to cancel!",
+                               Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -646,20 +684,22 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
             // Calculate the day that was selected in this pattern: Moday-1, Friday-5
             String day = daySelectionSpinner.getSelectedItem().toString();
-            if (day.equals("Monday"))
+            if (day.equals("Monday")) {
                 dayOfWeek = 1;
-            else if (day.equals("Tuesday"))
+            } else if (day.equals("Tuesday")) {
                 dayOfWeek = 2;
-            else if (day.equals("Wednesday"))
+            } else if (day.equals("Wednesday")) {
                 dayOfWeek = 3;
-            else if (day.equals("Thursday"))
+            } else if (day.equals("Thursday")) {
                 dayOfWeek = 4;
-            else if (day.equals("Friday"))
+            } else if (day.equals("Friday")) {
                 dayOfWeek = 5;
+            }
 
             // Check if today is Friday
             if (MainActivity.getCurrentDayOfWeekAsIndex() == 4) {
-                Toast.makeText(getContext(), "Today is Friday. You cannot request for extra classes on a Friday.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Today is Friday. You cannot request for extra classes on a Friday.",
+                               Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -682,19 +722,24 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
                         // If even a single course item arrived in the response
                         if (extraResponse.getBoolean("successful")) {
-                            Toast.makeText(getContext(), "Your extra request has been successfully submitted!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Your extra request has been successfully submitted!",
+                                           Toast.LENGTH_SHORT).show();
                             dialogFragment.dismiss();
                             return;
                         } else {
                             String error = extraResponse.getString("errorCode");
                             if (error.equals("slotbusy")) {
-                                Toast.makeText(context, "The time you selected was not available!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "The time you selected was not available!",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             } else if (error.equals("alreadyrequested")) {
-                                Toast.makeText(context, "The same request has been submitted earlier!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "The same request has been submitted earlier!",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             } else if (error.equals("unknown")) {
-                                Toast.makeText(context, "Could not submit your request at this time. Try again later...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,
+                                               "Could not submit your request at this time. Try again later...",
+                                               Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }

@@ -4,16 +4,13 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,32 +25,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
 //TODO: Proper documentation
 @TargetApi(26)
 public class MainActivity extends AppCompatActivity {
 
-    //Variable Declaration
-    private Button loginButton;
-    private TextView idText, passwordText;
-    private TextView forgotPassword;
-
-    //Connection URL 192.168.18.56:4444
-    public static final String URL = "192.168.18.4";
-
+    //Connection URL 192.168.18.4
+    public static final String URL = "192.168.8.104:4444";
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
     public static final String ACCOUNT_TYPE_HOD = "HOD";
     public static final String ACCOUNT_TYPE_QMD = "QMD";
-
     //Designations
     public static final String TEACHER_DESIGNATION_ASST_PROF = "asst_prof";
     public static final String TEACHER_DESIGNATION_HOD = "HOD";
     public static final String TEACHER_DESIGNATION_QMD = "QMD";
-
     //Class schedule slots
     public static final LocalTime SLOT_TIMINGS_1 = LocalTime.parse("08:30:00");
     public static final LocalTime SLOT_TIMINGS_2 = LocalTime.parse("09:30:00");
@@ -63,6 +52,56 @@ public class MainActivity extends AppCompatActivity {
     public static final LocalTime SLOT_TIMINGS_6 = LocalTime.parse("14:10:00");
     public static final LocalTime SLOT_TIMINGS_7 = LocalTime.parse("15:05:00");
     public static final LocalTime SLOT_TIMINGS_END = LocalTime.parse("16:00:00");
+    //Variable Declaration
+    private Button loginButton;
+    private TextView idText, passwordText;
+    private TextView forgotPassword;
+
+    /**
+     * Funciton that return the day of week such that monday is 1 and friday is 5
+     *
+     * @return int: 1-5
+     */
+    public static int getCurrentDayOfWeek() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+    }
+
+    /**
+     * Function that return day of week such that monday is 0 and friday is 4
+     *
+     * @return int: 0-4
+     */
+    public static int getCurrentDayOfWeekAsIndex() {
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
+    }
+
+    /**
+     * Function that calculates which slot it is and returns as an int
+     *
+     * @return int: 0-7: 0 is no slot while 1-7 are slots
+     */
+    public static int getCurrentSlot() {
+        LocalTime currentTime = LocalTime.now();
+        if (currentTime.isAfter(SLOT_TIMINGS_1) && currentTime.isBefore(SLOT_TIMINGS_2)) {
+            return 1;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_2) && currentTime.isBefore(SLOT_TIMINGS_3)) {
+            return 2;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_3) && currentTime.isBefore(SLOT_TIMINGS_4)) {
+            return 3;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_4) && currentTime.isBefore(SLOT_TIMINGS_5)) {
+            return 4;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_5) && currentTime.isBefore(SLOT_TIMINGS_6)) {
+            return 5;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_6) && currentTime.isBefore(SLOT_TIMINGS_7)) {
+            return 6;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_7) && currentTime.isBefore(SLOT_TIMINGS_END)) {
+            return 7;
+        } else if (currentTime.isAfter(SLOT_TIMINGS_END) || currentTime.isBefore(SLOT_TIMINGS_1)) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,14 +148,21 @@ public class MainActivity extends AppCompatActivity {
                                     //Check if user ID is correct
                                     if (idFound) {
                                         if (emailSent) {
-                                            Toast.makeText(MainActivity.this, "The password has been sent to your email address. Kindly Check it.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this,
+                                                           "The password has been sent to your email address. " +
+                                                           "Kindly Check it.", Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
                                         } else {
-                                            Toast.makeText(MainActivity.this, "Could not send the email due to some difficulties.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this,
+                                                           "Could not send the email due to some difficulties.",
+                                                           Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
                                         }
                                     } else {
-                                        Toast.makeText(MainActivity.this, "The account ID you entered was incorrect, make sure you are entering a valid account ID.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this,
+                                                       "The account ID you entered was incorrect, make sure you " +
+                                                       "are entering a valid account ID.", Toast.LENGTH_SHORT)
+                                             .show();
                                     }
                                     dialog.dismiss();
 
@@ -133,15 +179,16 @@ public class MainActivity extends AppCompatActivity {
                         };
 
                         //Initialize request string with POST method
-                        StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> param = new HashMap<>();
-                                //Put user ID and password in data set
-                                param.put("userID", accountID);
-                                return param;
-                            }
-                        };
+                        StringRequest request =
+                                new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        Map<String, String> param = new HashMap<>();
+                                        //Put user ID and password in data set
+                                        param.put("userID", accountID);
+                                        return param;
+                                    }
+                                };
                         //Execute request
                         request.setRetryPolicy(new RetryPolicy() {
                             @Override
@@ -171,8 +218,8 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Authenticating",
-                        "Verifying Credentials. Please wait...", true);
+                final ProgressDialog dialog = ProgressDialog
+                        .show(MainActivity.this, "Authenticating", "Verifying Credentials. Please wait...", true);
                 final String userId = idText.getText().toString();
                 final String userPass = passwordText.getText().toString();
                 String url = "http://" + URL + "/AreebaFYP/auth.php";
@@ -194,14 +241,16 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 dialog.cancel();
                                 //Show error dialog for wrong user ID
-                                new AlertDialog.Builder(MainActivity.this).setTitle("Incorrect ID!")
-                                        .setMessage("The ID was incorrect. Try Again!")
-                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                            }
-                                        })
-                                        .show();
+                                new AlertDialog.Builder(MainActivity.this).setTitle("Incorrect ID!").setMessage(
+                                        "The ID was incorrect. Try " + "Again!")
+                                                                          .setPositiveButton(android.R.string.yes,
+                                                                                             new DialogInterface.OnClickListener() {
+                                                                                                 @Override
+                                                                                                 public void onClick(
+                                                                                                         DialogInterface dialog,
+                                                                                                         int which) {
+                                                                                                 }
+                                                                                             }).show();
                                 return;
                             }
 
@@ -212,52 +261,74 @@ public class MainActivity extends AppCompatActivity {
                                     Intent userScreenIntent = new Intent(MainActivity.this, UserHome.class);
                                     userScreenIntent.putExtra("userType", ACCOUNT_TYPE_TEACHER);
                                     userScreenIntent.putExtra("userID", userId);
-                                    userScreenIntent.putExtra("userFirstName", authResponse.getString("holderFirstName"));
-                                    userScreenIntent.putExtra("userLastName", authResponse.getString("holderLastName"));
-                                    userScreenIntent.putExtra("userDesignation", authResponse.getString("holderDesignation"));
+                                    userScreenIntent
+                                            .putExtra("userFirstName", authResponse.getString("holderFirstName"));
+                                    userScreenIntent
+                                            .putExtra("userLastName", authResponse.getString("holderLastName"));
+                                    userScreenIntent.putExtra("userDesignation",
+                                                              authResponse.getString("holderDesignation"));
                                     startActivity(userScreenIntent);
                                 } else if (accountType.equals(ACCOUNT_TYPE_HOD)) {
                                     Intent userScreenIntent = new Intent(MainActivity.this, UserHome.class);
                                     userScreenIntent.putExtra("userType", ACCOUNT_TYPE_HOD);
                                     userScreenIntent.putExtra("userID", userId);
-                                    userScreenIntent.putExtra("userFirstName", authResponse.getString("holderFirstName"));
-                                    userScreenIntent.putExtra("userLastName", authResponse.getString("holderLastName"));
-                                    userScreenIntent.putExtra("userDesignation", authResponse.getString("holderDesignation"));
+                                    userScreenIntent
+                                            .putExtra("userFirstName", authResponse.getString("holderFirstName"));
+                                    userScreenIntent
+                                            .putExtra("userLastName", authResponse.getString("holderLastName"));
+                                    userScreenIntent.putExtra("userDesignation",
+                                                              authResponse.getString("holderDesignation"));
                                     startActivity(userScreenIntent);
                                 } else if (accountType.equals(ACCOUNT_TYPE_QMD)) {
                                     //Show error dialog for wrong account type
                                     new AlertDialog.Builder(MainActivity.this).setTitle("Wrong Account Type!")
-                                            .setMessage("QMD accounts are not available on the Android app!")
-                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            })
-                                            .show();
+                                                                              .setMessage("QMD accounts are not " +
+                                                                                          "available on the " +
+                                                                                          "Android " +
+                                                                                          "app!")
+                                                                              .setPositiveButton(
+                                                                                      android.R.string.yes,
+                                                                                      new DialogInterface.OnClickListener() {
+                                                                                          @Override
+                                                                                          public void onClick(
+                                                                                                  DialogInterface dialog,
+                                                                                                  int which) {
+                                                                                          }
+                                                                                      }).show();
                                 }
                             } else {
                                 dialog.cancel();
                                 if (accountType.equals(ACCOUNT_TYPE_QMD)) {
                                     //Show error dialog for wrong account type
                                     new AlertDialog.Builder(MainActivity.this).setTitle("Wrong Account Type!")
-                                            .setMessage("QMD accounts are not available on the Android app!")
-                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            })
-                                            .show();
+                                                                              .setMessage("QMD accounts are not " +
+                                                                                          "available on the " +
+                                                                                          "Android " +
+                                                                                          "app!")
+                                                                              .setPositiveButton(
+                                                                                      android.R.string.yes,
+                                                                                      new DialogInterface.OnClickListener() {
+                                                                                          @Override
+                                                                                          public void onClick(
+                                                                                                  DialogInterface dialog,
+                                                                                                  int which) {
+                                                                                          }
+                                                                                      }).show();
                                     return;
                                 } else {
                                     //Show error dialog for wrong password
                                     new AlertDialog.Builder(MainActivity.this).setTitle("Incorrect Password!")
-                                            .setMessage("The password was incorrect. Try again!")
-                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                }
-                                            })
-                                            .show();
+                                                                              .setMessage("The password was " +
+                                                                                          "incorrect. Try again!")
+                                                                              .setPositiveButton(
+                                                                                      android.R.string.yes,
+                                                                                      new DialogInterface.OnClickListener() {
+                                                                                          @Override
+                                                                                          public void onClick(
+                                                                                                  DialogInterface dialog,
+                                                                                                  int which) {
+                                                                                          }
+                                                                                      }).show();
                                     return;
                                 }
                             }
@@ -270,10 +341,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         String localizedMessage = error.getLocalizedMessage();
-                        if (localizedMessage != null)
+                        if (localizedMessage != null) {
                             Log.d("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
-                        else
-                            Toast.makeText(MainActivity.this, "Check you internet connection and try again.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Check you internet connection and try again.",
+                                           Toast.LENGTH_LONG).show();
+                        }
                     }
                 };
 
@@ -293,48 +366,5 @@ public class MainActivity extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-    }
-
-    /**
-     * Funciton that return the day of week such that monday is 1 and friday is 5
-     * @return int: 1-5
-     */
-    public static int getCurrentDayOfWeek() {
-        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
-    }
-
-    /**
-     * Function that return day of week such that monday is 0 and friday is 4
-     * @return int: 0-4
-     */
-    public static int getCurrentDayOfWeekAsIndex() {
-        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2;
-    }
-
-    /**
-     * Function that calculates which slot it is and returns as an int
-     * @return int: 0-7: 0 is no slot while 1-7 are slots
-     */
-    public static int getCurrentSlot() {
-        LocalTime currentTime = LocalTime.now();
-        if (currentTime.isAfter(SLOT_TIMINGS_1) && currentTime.isBefore(SLOT_TIMINGS_2)) {
-            return 1;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_2) && currentTime.isBefore(SLOT_TIMINGS_3)) {
-            return 2;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_3) && currentTime.isBefore(SLOT_TIMINGS_4)) {
-            return 3;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_4) && currentTime.isBefore(SLOT_TIMINGS_5)) {
-            return 4;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_5) && currentTime.isBefore(SLOT_TIMINGS_6)) {
-            return 5;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_6) && currentTime.isBefore(SLOT_TIMINGS_7)) {
-            return 6;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_7) && currentTime.isBefore(SLOT_TIMINGS_END)) {
-            return 7;
-        } else if (currentTime.isAfter(SLOT_TIMINGS_END) || currentTime.isBefore(SLOT_TIMINGS_1)) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 }

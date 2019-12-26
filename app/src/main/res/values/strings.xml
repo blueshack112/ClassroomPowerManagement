@@ -27,15 +27,18 @@
     <string name="override_radio_button_right_now">Right Now</string>
     <string name="override_radio_button_later">Later</string>
     <string name="override_schedule_select">Select Date, Slot, and Length</string>
-    <string name="override_schedule_date">Date:</string>
+    <string name="override_schedule_date">Day:</string>
     <string name="override_schedule_slot">Slot:</string>
     <string name="override_schedule_length">Length:</string>
     <string name="override_selection_heading">Control Appliances Appropriately</string>
-    <string name="override_selection_relay_1">Lights and Fans Front</string>
-    <string name="override_selection_relay_2">Lights and Fans Middle</string>
-    <string name="override_selection_relay_3">Lights and Fans Rear</string>
-    <string name="override_selection_relay_4">Air Conditioner Front</string>
-    <string name="override_selection_relay_5">Air Conditioner Back</string>
+    <string name="override_selection_relay_1">Lights and Fans 1st Row</string>
+    <string name="override_selection_relay_2">Lights and Fans 2nd Row</string>
+    <string name="override_selection_relay_3">Lights and Fans 3rd Row</string>
+    <string name="override_selection_relay_4">Lights and Fans 4th Row</string>
+    <string name="override_selection_relay_5">Lights and Fans 5th Row</string>
+    <string name="override_selection_relay_6">Lights and Fans 6th Row</string>
+    <string name="override_selection_relay_7">Air Conditioner Front</string>
+    <string name="override_selection_relay_8">Air Conditioner Back</string>
     <string name="override_selection_button_open_all">Open All</string>
     <string name="override_selection_button_close_all">Close All</string>
     <string name="submit_button">Submit</string>
@@ -78,7 +81,6 @@
         <item>Slot 5</item>
         <item>Slot 6</item>
         <item>Slot 7</item>
-        <item>Slot 8</item>
     </string-array>
 
     <string name="default_text_no_days_available">No Days Available</string>
