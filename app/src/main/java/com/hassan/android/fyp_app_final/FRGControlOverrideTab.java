@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -204,7 +205,7 @@ public class FRGControlOverrideTab extends Fragment {
     /**
      * To switch all the switches to on
      */
-    private void openAllSwitches () {
+    private void openAllSwitches() {
         // Loop through all the switches and turn them on
         for (int i = 0; i < switches.size(); i++)
             switches.get(i).setChecked(true);
@@ -225,7 +226,7 @@ public class FRGControlOverrideTab extends Fragment {
     /**
      * To switch all the switches to off
      */
-    private void closeAllSwitches () {
+    private void closeAllSwitches() {
         // Loop through all the switches and turn them on
         for (int i = 0; i < switches.size(); i++)
             switches.get(i).setChecked(false);
@@ -438,8 +439,11 @@ public class FRGControlOverrideTab extends Fragment {
 
     /**
      * Function that will call the php script that will get the current relays' state and set it to the switches.
+     *
      * This function will also setup the listener that will set all switches to off if the 'later' radio button
      * is selected and again call the update function when 'right now' radio button is selected.
+     *
+     * The same will be done for the roomSelector's on item selected listener in this function
      */
     private void setupSwitches() {
         scheduleSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -450,10 +454,81 @@ public class FRGControlOverrideTab extends Fragment {
                 if (newSelectionID == R.id.override_rb_later) {
                     closeAllSwitches();
                 } else {
-                    //TODO: complete from here
-                    // Call the data from here
+                    updateSwitches();
                 }
             }
         });
+
+        roomSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_right_now) {
+                    updateSwitches();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                roomSelectionSpinner.setSelection(0);
+                updateSwitches();
+            }
+        });
+    }
+
+    /**
+     * Function that calls the relayStatus.php script and adjusts the switches accordingly if 'right now' was
+     * selected
+     */
+    private void updateSwitches() {
+        // Get the room id
+        final String roomSelection = roomSelectionSpinner.getSelectedItem().toString();
+        char roomChar = roomSelection.charAt(roomSelection.length() - 1);
+        final String room = Integer.toString(1000 + (roomChar - 64));
+
+        // Call the relayStatus.php script and get relays if present
+        String url = "http://" + MainActivity.URL + "/AreebaFYP/relayStatus.php";
+        Response.Listener listener = new Response.Listener() {
+            @Override
+            public void onResponse(Object response) {
+                try {
+                    JSONObject relayResponse = new JSONObject(response.toString());
+                    if (relayResponse.getBoolean("roomActive")) {
+                        // Read every entry from the array and turn on that switch
+                        JSONArray relays = relayResponse.getJSONArray("relaysOn");
+                        closeAllSwitches();
+                        for (int i = 0; i < relays.length(); i++) {
+                            String relayTemp = relays.getString(i);
+                            int temp = Integer.parseInt(
+                                    Character.toString(relayTemp.charAt(relayTemp.length() - 1))) - 1;
+                            switches.get(temp).setChecked(true);
+                        }
+                    } else {
+                        closeAllSwitches();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        };
+
+        //Initialize request string with POST method
+        StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                //Put user ID and password in data set
+                param.put("roomID", room);
+                return param;
+            }
+        };
+        //Execute request
+        Volleyton.getInstance(getContext()).addToRequestQueue(request);
     }
 }

@@ -666,6 +666,8 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
         } else {
             final String type = "EXTRA";
+
+            // Get the room id
             final String roomSelection = roomSelectionSpinner.getSelectedItem().toString();
             char roomChar = roomSelection.charAt(roomSelection.length() - 1);
             room = Integer.toString(1000 + (roomChar - 64));
