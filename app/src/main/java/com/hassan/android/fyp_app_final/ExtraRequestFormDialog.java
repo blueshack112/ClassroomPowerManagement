@@ -130,10 +130,9 @@ public class ExtraRequestFormDialog extends DialogFragment {
 
 
     /**
-     * This function is how the activity will send arguments to the object.
-     * Mainly, we need this function to get the userID from the outside activity.
+     * This function is how the activity will send arguments to the dialog.
      *
-     * @param args: Bundle: must contain a string by the name "userID"
+     * @param args: Bundle: must contain all the required perimeters
      */
     @Override
     public void setArguments(Bundle args) {
@@ -212,7 +211,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Fucntion that will assign all the ids to the UI objects and call the setup funciton of each UI object
      */
-    public void setupViews() {
+    private void setupViews() {
         // Assign layout ids to the corresponding element so that it can be manipulated
         courseSelectionSpinner = formView.findViewById(R.id.extra_request_course_spinner);
         requestTypeSelectionRGroup = formView.findViewById(R.id.extra_request_type_radio_group);
@@ -242,7 +241,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * Function that will assign the adapter and data to the spinner
      * The data will be loaded form the database
      */
-    public void setupRoomSelectionSpinner() {
+    private void setupRoomSelectionSpinner() {
         roomSelectionSpinnerAdapter =
                 new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item);
         roomSelectionSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -254,7 +253,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * THe function will turn different constraint groups visible or invisible based on the option that was
      * selected.
      */
-    public void setupRequestTypeSelectionRGroup() {
+    private void setupRequestTypeSelectionRGroup() {
         // Create the listener for change in radio button group
         requestTypeSelectionRGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -300,7 +299,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Function that loads up the data for the course course selection spinner
      */
-    public void setupCourseSelectionSpinner() {
+    private void setupCourseSelectionSpinner() {
         courseSelectionSpinnerAdapter =
                 new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
                                             courseNames, getContext().getResources().getString(
@@ -312,7 +311,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Function to load the available days in the day selection spinner
      */
-    public void setupDaySelectionSpinner() {
+    private void setupDaySelectionSpinner() {
         // The array of all available days. This will be sliced later based on the current day
         String[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
 
@@ -348,7 +347,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Function that will assign 1-7 to the slot selection spinner
      */
-    public void setupSlotSelectionSpinner() {
+    private void setupSlotSelectionSpinner() {
         String[] slots = {"1", "2", "3", "4", "5", "6", "7"};
         slotSelectionSpinnerAdapter =
                 new SelectionSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, slots,
@@ -362,7 +361,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * This function will also setup the slot selection spinner's on change function. The function is for length
      * picker but since length picker's functionality depends on it, we are setting it up here
      */
-    public void setupLengthNumberPicker() {
+    private void setupLengthNumberPicker() {
         int length = getAvailableLength();
 
         // set minimum value of the number picker as 1
@@ -401,10 +400,9 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * Function that returns the slot that is currently selected by the slot selection spinner
      * 1 is added to the answer because the getSelectedItemPosition returns an index (0-6) while we need real
      * numbers (1-7)
-     *
-     * @return
+     * @return: int: Slots from 1 to 7
      */
-    public int getSelectedSlot() {
+    private int getSelectedSlot() {
         return slotSelectionSpinner.getSelectedItemPosition() + 1;
     }
 
@@ -413,7 +411,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      *
      * @return int: length available to choose from. could be 1, 2 or 3
      */
-    public int getAvailableLength() {
+    private int getAvailableLength() {
         int chosenSlot = getSelectedSlot();
 
         // if the slot is right before break or end of day...
@@ -435,7 +433,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      *
      * @param chosenSlot: the slot against which the length needs to be calculated
      */
-    public int getAvailableLength(int chosenSlot) {
+    private int getAvailableLength(int chosenSlot) {
         chosenSlot++;
         // if the slot is right before break or end of day...
         if (chosenSlot == 4 || chosenSlot == 7) {
@@ -458,7 +456,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * This function will also setup the on change listener of the course selector.
      * TODO: what if user wanted to schedule a cancelled class?
      */
-    public void setupClassSelectionSpinner() {
+    private void setupClassSelectionSpinner() {
         ArrayList<String> data = new ArrayList<>();
         for (int i = 0; i < courseIDs.size(); i++) {
             if (courseNames.get(0).startsWith(courseIDs.get(i))) {
@@ -497,7 +495,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Function that will alot the data into the general reason spinner
      */
-    public void setupGeneralReasonSpinner() {
+    private void setupGeneralReasonSpinner() {
         // Setup with cancel class adapter
         // This will change as the request type changes
         ArrayList<String> data = new ArrayList<>();
@@ -515,7 +513,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
     /**
      * Function that will setup the main message text field. Basically it just adds a placeholder there
      */
-    public void setupMessageEditText() {
+    private void setupMessageEditText() {
         messageEditText.setHint(getContext().getResources().getString(R.string.default_text_message_editbox));
     }
 
@@ -524,7 +522,7 @@ public class ExtraRequestFormDialog extends DialogFragment {
      * The API will check if the date and slot that is being asked by the user is available or not all other
      * verifications will be done here
      */
-    public boolean submitRequest(final DialogInterface dialogFragment, final Context context) {
+    private boolean submitRequest(final DialogInterface dialogFragment, final Context context) {
         // Get the course name
         final String course = courseSelectionSpinner.getSelectedItem().toString();
         // Check if the selected item is default or not

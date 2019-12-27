@@ -33,8 +33,8 @@ import java.util.Map;
 @TargetApi(26)
 public class MainActivity extends AppCompatActivity {
 
-    //Connection URL 192.168.18.4
-    public static final String URL = "192.168.8.104:4444";
+    //Connection URL 192.168.18.104:4444
+    public static final String URL = "192.168.18.4";
     //Account Types
     public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
     public static final String ACCOUNT_TYPE_HOD = "HOD";
