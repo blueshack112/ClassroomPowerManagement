@@ -1,14 +1,21 @@
 <resources>
+
     <string name="app_name">FYP_APP_FINAL</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="class_list_heading">Your Classes</string>
-    <string name="action_menu_logout">Log Out</string>
-    <string name="action_menu_request">Extra Request</string>
-    <string name="room_status_heading">Check Room Status</string>
     <string name="default_text_course_spinner">Select A Course Please</string>
     <string name="default_text_class_spinner">Select A Class Please</string>
-    <string name="default_text_message_editbox">Please write a short reason for this request...</string>
+    <string name="default_text_message_editbox">Please write a short reason for this request…</string>
     <string name="teacher_schedule_list_heading">Your Classes: </string>
+    <string name="submit_button">Submit</string>
+
+
+    <!-- MENU BAR STRINGS -->
+    <string name="action_menu_logout">Log Out</string>
+    <string name="action_menu_request">Extra Request</string>
+
+    <!-- ROOM STATUS SCHEDULE STRINGS -->
+    <string name="room_status_heading">Check Room Status</string>
     <string name="room_status_attribute_date">Date: </string>
     <string name="room_status_attribute_room">Room Name: </string>
     <string name="room_status_attribute_course_name">Course Name: </string>
@@ -16,12 +23,24 @@
     <string name="room_status_attribute_session">Sessions: </string>
     <string name="room_status_attribute_class_type">Class Type: </string>
     <string name="room_status_attribute_attendance">Attendance: </string>
+
+    <!-- PENDING REQUEST STRINGS -->
     <string name="pending_request_list_heading">Your Pending Requests</string>
     <string name="pending_request_attribute_teacher_name">Teacher Name: </string>
     <string name="pending_request_attribute_course_name">Course Name: </string>
     <string name="pending_request_attribute_request_type">Request Type: </string>
     <string name="pending_request_attribute_reason">General Reason: </string>
     <string name="pending_request_button_details">Details</string>
+
+    <string name="pending_request_info_heading">Pending Request Details</string>
+    <string name="pending_request_info_room">Room:</string>
+    <string name="pending_request_info_day">Day:</string>
+    <string name="pending_request_info_slot">Slot:</string>
+    <string name="pending_request_info_length">Length:</string>
+    <string name="pending_request_info_message">Message:</string>
+
+
+    <!-- OVERRIDE ROOM SCHEDULE STRINGS -->
     <string name="override_room_select_heading">Room:</string>
     <string name="override_schedule_heading">Schedule: </string>
     <string name="override_radio_button_right_now">Right Now</string>
@@ -41,7 +60,8 @@
     <string name="override_selection_relay_8">Air Conditioner Back</string>
     <string name="override_selection_button_open_all">Open All</string>
     <string name="override_selection_button_close_all">Close All</string>
-    <string name="submit_button">Submit</string>
+
+    <!-- EXTRA REQUEST FORM STRINGS -->
     <string name="extra_request_form_heading">Special Request Form</string>
     <string name="extra_request_form_course_name">Course: </string>
     <string name="extra_request_form_request_type">Request Type:</string>
@@ -57,7 +77,7 @@
     <string name="extra_request_form_message_hint">Enter your message...</string>
     <string name="extra_request_form_title">Extra Request Form</string>
 
-
+    <!-- SPINNER ARRAY AND DEFAULT STRINGS -->
     <string name="default_text_room_spinner">Select A Room Please</string>
     <string-array name="Rooms">
         <item>Room A</item>

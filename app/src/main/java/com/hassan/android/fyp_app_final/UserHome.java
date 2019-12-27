@@ -138,7 +138,6 @@ public class UserHome extends AppCompatActivity {
 
         // Show the dialog
         formDialog.show(getSupportFragmentManager(), "formDialog");
-        Log.d("formdebug", "Form shown...");
     }
 
     //functionality for logout button
