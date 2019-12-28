@@ -28,8 +28,10 @@ import java.util.Map;
 
 public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleListRecyclerAdapter.Holder> {
 
-    private ArrayList<CourseModel> courses;                                                         // Will contian all the instances of courses
-    private Context context;                                                                        // Required for stuff like Toast
+    private ArrayList<CourseModel> courses;
+            // Will contian all the instances of courses
+    private Context                context;
+            // Required for stuff like Toast
 
     /**
      * Necessary contructor for adapter to initialize properly
@@ -44,7 +46,8 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
      */
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.teacher_schedule_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                                  .inflate(R.layout.teacher_schedule_list_item, parent, false);
         return new Holder(view);
     }
 
@@ -59,7 +62,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
         holder.courseNameText.setText(courses.get(position).getCourseName());
 
         // Set the slot text to the slot of the course
-        holder.courseDaySlotText.setText(courses.get(position).getCourseDaySlot());
+        holder.courseDaySlotText.setText(courses.get(position).getCourseDaySlot() + " | " + courses.get(position).getRoomName());
 
         // if the courses is active, show green circular light or else show red
         if (courses.get(position).isActive()) {
@@ -73,7 +76,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
         // Set the holder's attendance entered status to the course's attendance entered status
         // so that if the application is restarted and the attendance is entered in the database
         // then the app wont allow the user the enter the attendance
-        holder.attendanceEntered  = courses.get(position).isAttendanceAdded();
+        holder.attendanceEntered = courses.get(position).isAttendanceAdded();
 
         // on click listener for for the add attendance button
         holder.attendanceButton.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +114,8 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                         // Set the attendance of the course item to the one entered by user
                         courses.get(position).setAttendance(attendance);
 
-                        // Set  the current holder's attendance entered to true so that the teacher cannot enter again
+                        // Set  the current holder's attendance entered to true so that the teacher cannot enter
+                        // again
                         holder.changeAttendanceEntered(true);
 
                         //Setting up response handler
@@ -122,38 +126,53 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                     // Get the json array that came in response
                                     JSONObject addAttendanceResponse = new JSONObject(response.toString());
 
-                                    // Get the successful boolean from the response to see if the attendance was made or not
+                                    // Get the successful boolean from the response to see if the attendance was
+                                    // made or not
                                     addAttendanceSuccess = addAttendanceResponse.getBoolean("successful");
 
-                                    // Check if the attendance entered was more than max students enrolled in the course
+                                    // Check if the attendance entered was more than max students enrolled in
+                                    // the course
                                     boolean moreThanMax = addAttendanceResponse.getBoolean("moreThanMaxStudents");
                                     if (moreThanMax) {
                                         dialog.dismiss();
-                                        new AlertDialog.Builder(dialogContext)
-                                                .setTitle("Invalid Attendance")
-                                                .setMessage("Attendance entered is more than the number of students enrolled.")
-                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
+                                        new AlertDialog.Builder(dialogContext).setTitle("Invalid Attendance")
+                                                                              .setMessage(
+                                                                                      "Attendance entered is " +
+                                                                                      "more than the number of " +
+                                                                                      "students enrolled.")
+                                                                              .setPositiveButton("Ok",
+                                                                                                 new DialogInterface.OnClickListener() {
+                                                                                                     @Override
+                                                                                                     public void onClick(
+                                                                                                             DialogInterface dialog,
+                                                                                                             int which) {
+                                                                                                         dialog.dismiss();
+                                                                                                     }
+                                                                                                 });
                                         holder.changeAttendanceEntered(false);
                                         courses.get(position).setAttendance(-1);
                                         courses.get(position).setAttendanceAdded(false);
                                         return;
                                     }
 
-                                    // set the attendance added status of the courses to the success variable so that
+                                    // set the attendance added status of the courses to the success variable so
+                                    // that
                                     // if it was false, attendance can be added again in the belo update function
                                     courses.get(position).setAttendanceAdded(addAttendanceSuccess);
 
 
                                     // React based on success statuses
-                                    if (addAttendanceSuccess)
-                                        Toast.makeText(context, "Attendance is " + tvAttendance.getText().toString() + "\tHolder.Attendance Entered:" + Boolean.toString(holder.attendanceEntered) + "Attendance Upload Success:" + Boolean.toString(addAttendanceSuccess), Toast.LENGTH_SHORT).show();
-                                    else
+                                    if (addAttendanceSuccess) {
+                                        Toast.makeText(context,
+                                                       "Attendance is " + tvAttendance.getText().toString() +
+                                                       "\tHolder.Attendance Entered:" +
+                                                       Boolean.toString(holder.attendanceEntered) +
+                                                       "Attendance Upload Success:" +
+                                                       Boolean.toString(addAttendanceSuccess), Toast.LENGTH_SHORT)
+                                             .show();
+                                    } else {
                                         Log.d("AttendanceStatus: ", Boolean.toString(addAttendanceSuccess));
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -163,25 +182,28 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 String localizedMessage = error.getLocalizedMessage();
-                                if (localizedMessage != null)
+                                if (localizedMessage != null) {
                                     Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
-                                else
-                                    Toast.makeText(context, "Check your internet connection and try again.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(context, "Check your internet connection and try again.",
+                                                   Toast.LENGTH_LONG).show();
+                                }
                             }
                         };
 
                         //Initialize request string with POST method
-                        StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> param = new HashMap<>();
-                                //Put user ID in data set
-                                param.put("roomID", courses.get(position).getRoomID());
-                                param.put("courseID", courses.get(position).getCourseID());
-                                param.put("attendance", tvAttendance.getText().toString());
-                                return param;
-                            }
-                        };
+                        StringRequest request =
+                                new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        Map<String, String> param = new HashMap<>();
+                                        //Put user ID in data set
+                                        param.put("roomID", courses.get(position).getRoomID());
+                                        param.put("courseID", courses.get(position).getCourseID());
+                                        param.put("attendance", tvAttendance.getText().toString());
+                                        return param;
+                                    }
+                                };
                         //Execute request
                         Volleyton.getInstance(context).addToRequestQueue(request);
 
@@ -222,14 +244,23 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
     }
 
     /**
+     * Function that updates the courses variable to add and remove courses from the list if needed.
+     *
+     * @param courses: the instance of the new list that needs to replace the old one.
+     */
+    public void updateDataSet(ArrayList<CourseModel> courses) {
+        this.courses = courses;
+    }
+
+    /**
      * Class where the layout is initialized and its views are bound to variables (check constructor)
      */
     class Holder extends RecyclerView.ViewHolder {
-        boolean attendanceEntered;
-        TextView courseNameText;
-        TextView courseDaySlotText;
+        boolean   attendanceEntered;
+        TextView  courseNameText;
+        TextView  courseDaySlotText;
         ImageView courseStatusImage;
-        Button attendanceButton;
+        Button    attendanceButton;
 
         public Holder(View itemView) {
             super(itemView);
@@ -243,14 +274,5 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
         public void changeAttendanceEntered(boolean x) {
             attendanceEntered = x;
         }
-    }
-
-    /**
-     * Function that updates the courses variable to add and remove courses from the list if needed.
-     *
-     * @param courses: the instance of the new list that needs to replace the old one.
-     */
-    public void updateDataSet(ArrayList<CourseModel> courses) {
-        this.courses = courses;
     }
 }

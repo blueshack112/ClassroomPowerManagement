@@ -8,10 +8,7 @@ package com.hassan.android.fyp_app_final;
  * - Reject: The request will be rejected will not show again in the pending request column.
  * - Hold: No changes will be made to the request and the request will remain in the pending request section.
  * <p>
- * TODO: the request should be removed from the models also!
- * TODO: sort the requests based on day of week and slot!
- * <p>
- * TODO: MASSIVE CHANGE: CONVERT EXTRA_SCHEDULE_TABLE to EXTRA_WEEK_SCHEDULE_TABLE
+ * TODO: MASSIVE CHANGE: CONVERT EXTRA_SCHEDULE_TABLE to EXTRA_WEEK_SCHEDULE_TABLE in PI ALSO!
  * Do that by deleting the extra schedule column from week_schedule and reprogramming raspberry pi to use
  * extra_schedule table as the new table for week's extra schedule table. YOU KNOW HOW IT WILL BE DONE
  * (ALHAMDULILLAH)
@@ -19,6 +16,7 @@ package com.hassan.android.fyp_app_final;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -27,9 +25,12 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -59,6 +60,8 @@ public class PendingRequestInfoDialog extends DialogFragment {
     private TextView messageTextView;
 
     // Data
+    private int position;
+    private PendingRequestRecyclerAdapter adapter;
     private String requestType;
     private String teacherName;
     private String teacherID;
@@ -67,6 +70,7 @@ public class PendingRequestInfoDialog extends DialogFragment {
     private String room;
     private String roomID;
     private String day;
+    private String dayNum;
     private String slot;
     private String length;
     private String generalReason;
@@ -218,6 +222,10 @@ public class PendingRequestInfoDialog extends DialogFragment {
      */
     public void submitRequest(final DialogInterface dialogFragment, final Context context, String decision) {
         if (decision.equals("ACCEPT")) {
+
+            final ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setTitle("Accepting Request");
+            dialog.setMessage("Please wait while we try to accept the request...");
             //Start calling acceptRequest.php and check if the reuest could be submitted
             // URL of the API
             String url = "http://" + MainActivity.URL + "/AreebaFYP/acceptRequest.php";
@@ -229,6 +237,18 @@ public class PendingRequestInfoDialog extends DialogFragment {
                     try {
                         // Converting the response into JSON object
                         JSONObject extraResponse = new JSONObject(response.toString());
+
+                        if (extraResponse.getBoolean("successful")) {
+                            Toast.makeText(context, "The request has been accepted successfully.", Toast.LENGTH_SHORT).show();
+                            adapter.deleteItem(position);
+                            dialogFragment.cancel();
+                        } else {
+                            if (extraResponse.getString("errorCode").equals("alreadyaccepted"))
+                                Toast.makeText(context, "Could not complete the request (Already scheduled a class at that time).", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(context, "Could not complete the request.", Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -247,20 +267,26 @@ public class PendingRequestInfoDialog extends DialogFragment {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> param = new HashMap<>();
                     // Put request details in the data set
-                    param.put("userID", teacherID);
+                    param.put("requestType", requestType);
                     param.put("roomID", roomID);
+                    param.put("userID", teacherID);
                     param.put("courseID", courseID);
-                    param.put("dayOfWeek", day);
+                    param.put("dayOfWeek", dayNum);
                     param.put("slot", slot);
                     param.put("length", length);
-                    param.put("requestType", requestType);
+
                     return param;
                 }
             };
             //Execute request
-            //Volleyton.getInstance(getContext()).addToRequestQueue(request);
+            request.setRetryPolicy(new DefaultRetryPolicy(
+                    10000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            dialog.show();
+            Volleyton.getInstance(getContext()).addToRequestQueue(request);
         } else {
-            //Start calling acceptRequest.php and check if the reuest could be submitted
+            //Start calling rejectRequest.php and check if the reuest could be submitted
             // URL of the API
             String url = "http://" + MainActivity.URL + "/AreebaFYP/rejectRequest.php";
 
@@ -323,12 +349,14 @@ public class PendingRequestInfoDialog extends DialogFragment {
         length = args.getString("length");
         generalReason = args.getString("generalReason");
         message = args.getString("message");
+        position = args.getInt("position");
 
         // Change Room to 'Room A' format from '1001' format
         char roomchar = (char) (Integer.parseInt(roomID) - 1000 + 64);
         room = "Room " + roomchar;
 
         // Change day from 1-5 to Monday - Friday
+        dayNum = day;
         switch (Integer.parseInt(day)) {
             case 1:
                 day = "Monday";
@@ -350,5 +378,9 @@ public class PendingRequestInfoDialog extends DialogFragment {
                 break;
 
         }
+    }
+
+    public void setAdapterObject(PendingRequestRecyclerAdapter adapter) {
+        this.adapter = adapter;
     }
 }

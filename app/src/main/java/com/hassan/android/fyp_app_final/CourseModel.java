@@ -10,6 +10,7 @@ import java.util.Locale;
 public class CourseModel {
 
     private String mRoom;
+    private String mRoomName;
     private String mCourseID;
     private String mCourseName;
     private String mDay;
@@ -41,10 +42,13 @@ public class CourseModel {
             mAttendanceAdded = false;
         }
         else {
-            Log.d("AttendanceStringProblem", attendance);
             mAttendance = Integer.parseInt(attendance);
-            mRoom = room;
         }
+        mRoom = room;
+        // Convert room to room name too
+        char roomchar = (char) (Integer.parseInt(room) - 1000 + 64);
+        mRoomName = "Room " + Character.toString(roomchar);
+
         mCourseID = courseID;
     }
 
@@ -102,6 +106,15 @@ public class CourseModel {
      */
     public String getRoomID() {
         return mRoom;
+    }
+
+    /**
+     * Function to get the name of the room
+     *
+     * @return String: room name
+     */
+    public String getRoomName() {
+        return mRoomName;
     }
 
     /**

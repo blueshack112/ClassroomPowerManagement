@@ -69,7 +69,7 @@
             android:textColor="@color/colorAccentMaroonish"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView28" />
+            app:layout_constraintTop_toBottomOf="@+id/pending_request_info_general_reason_text_view" />
 
         <TextView
             android:id="@+id/pending_request_info_teacher_text_view"
@@ -152,7 +152,6 @@
             android:text="@string/extra_request_form_general_reason"
             android:textColor="#000000"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView28"
             app:layout_constraintEnd_toEndOf="@+id/pending_request_info_teacher_text_view"
             app:layout_constraintStart_toStartOf="@+id/pending_request_info_teacher_text_view"
             app:layout_constraintTop_toTopOf="@+id/textView28" />

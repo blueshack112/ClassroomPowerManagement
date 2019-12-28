@@ -35,10 +35,12 @@ import java.util.Map;
 public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingRequestRecyclerAdapter.Holder> {
     private ArrayList<RequestModel> requests;
     private Context                 context;
+    private PendingRequestRecyclerAdapter self;
 
     public PendingRequestRecyclerAdapter(Context context) {
         this.context = context;
         requests = new ArrayList<>();
+        self = this;
         loadData();
     }
 
@@ -55,7 +57,13 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
         holder.courseNameText.setText(requests.get(position).getCourseName());
         holder.teacherNameText.setText(requests.get(position).getRequestor());
         holder.requestTypeText.setText(requests.get(position).getRequestType());
-        holder.generalReasonText.setText(requests.get(position).getMessage());
+
+        // Set length to general reason
+        if (requests.get(position).getGeneralReason().length() > 15) {
+            holder.generalReasonText.setText(requests.get(position).getGeneralReason().substring(0,15)+"...");
+        } else {
+            holder.generalReasonText.setText(requests.get(position).getGeneralReason());
+        }
 
         // Setting up the button functionality
         holder.detailsButton.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +84,11 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
                 b.putString("length", requests.get(position).getLength());
                 b.putString("generalReason", requests.get(position).getGeneralReason());
                 b.putString("message", requests.get(position).getMessage());
+                b.putInt("position", position);
 
                 // Send the arguments and show the dialog
                 infoDialog.setArguments(b);
+                ((PendingRequestInfoDialog)infoDialog).setAdapterObject(self);
                 infoDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "infoDialog");
             }
         });
@@ -92,7 +102,7 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
     /**
      * This function will call the pendingRequests.php script and load request data
      */
-    public void loadData() {
+    private void loadData() {
         //Start calling pendingRequest.php and check if the request could be submitted
         // URL of the API
         String url = "http://" + MainActivity.URL + "/AreebaFYP/pendingRequests.php";
@@ -152,6 +162,11 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
 
         //Execute request
         Volleyton.getInstance(context).addToRequestQueue(request);
+    }
+
+    public void deleteItem (int position) {
+        requests.remove(position);
+        notifyDataSetChanged();
     }
 
     class Holder extends RecyclerView.ViewHolder {
