@@ -25,7 +25,6 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,21 +59,21 @@ public class PendingRequestInfoDialog extends DialogFragment {
     private TextView messageTextView;
 
     // Data
-    private int position;
+    private int                           position;
     private PendingRequestRecyclerAdapter adapter;
-    private String requestType;
-    private String teacherName;
-    private String teacherID;
-    private String courseName;
-    private String courseID;
-    private String room;
-    private String roomID;
-    private String day;
-    private String dayNum;
-    private String slot;
-    private String length;
-    private String generalReason;
-    private String message;
+    private String                        requestType;
+    private String                        teacherName;
+    private String                        teacherID;
+    private String                        courseName;
+    private String                        courseID;
+    private String                        room;
+    private String                        roomID;
+    private String                        day;
+    private String                        dayNum;
+    private String                        slot;
+    private String                        length;
+    private String                        generalReason;
+    private String                        message;
 
     @NonNull
     @Override
@@ -222,11 +221,10 @@ public class PendingRequestInfoDialog extends DialogFragment {
      */
     public void submitRequest(final DialogInterface dialogFragment, final Context context, String decision) {
         if (decision.equals("ACCEPT")) {
-
             final ProgressDialog dialog = new ProgressDialog(context);
             dialog.setTitle("Accepting Request");
             dialog.setMessage("Please wait while we try to accept the request...");
-            //Start calling acceptRequest.php and check if the reuest could be submitted
+            //Start calling acceptRequest.php and check if the reuqest could be submitted
             // URL of the API
             String url = "http://" + MainActivity.URL + "/AreebaFYP/acceptRequest.php";
 
@@ -239,14 +237,20 @@ public class PendingRequestInfoDialog extends DialogFragment {
                         JSONObject extraResponse = new JSONObject(response.toString());
 
                         if (extraResponse.getBoolean("successful")) {
-                            Toast.makeText(context, "The request has been accepted successfully.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "The request has been accepted successfully.",
+                                           Toast.LENGTH_SHORT).show();
                             adapter.deleteItem(position);
-                            dialogFragment.cancel();
+                            dialog.dismiss();
                         } else {
-                            if (extraResponse.getString("errorCode").equals("alreadyaccepted"))
-                                Toast.makeText(context, "Could not complete the request (Already scheduled a class at that time).", Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(context, "Could not complete the request.", Toast.LENGTH_SHORT).show();
+                            if (extraResponse.getString("errorCode").equals("alreadyaccepted")) {
+                                Toast.makeText(context,
+                                               "Could not complete the request (Already scheduled a class at " +
+                                               "that time).", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Could not complete the request.", Toast.LENGTH_SHORT)
+                                     .show();
+                                dialog.dismiss();
+                            }
                         }
                         dialog.dismiss();
                     } catch (JSONException e) {
@@ -279,14 +283,15 @@ public class PendingRequestInfoDialog extends DialogFragment {
                 }
             };
             //Execute request
-            request.setRetryPolicy(new DefaultRetryPolicy(
-                    10000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                                          DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             dialog.show();
             Volleyton.getInstance(getContext()).addToRequestQueue(request);
         } else {
-            //Start calling rejectRequest.php and check if the reuest could be submitted
+            final ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setTitle("Reject Request");
+            dialog.setMessage("Please wait while we try to reject the request...");
+            //Start calling rejectRequest.php and check if the request could be submitted
             // URL of the API
             String url = "http://" + MainActivity.URL + "/AreebaFYP/rejectRequest.php";
 
@@ -297,6 +302,17 @@ public class PendingRequestInfoDialog extends DialogFragment {
                     try {
                         // Converting the response into JSON object
                         JSONObject extraResponse = new JSONObject(response.toString());
+                        if (extraResponse.getBoolean("successful")) {
+                            Toast.makeText(context, "The request was rejected successfully", Toast.LENGTH_SHORT)
+                                 .show();
+                            adapter.deleteItem(position);
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(context, "The request could not be rejected", Toast.LENGTH_SHORT)
+                                 .show();
+                            dialog.dismiss();
+                        }
+                        Log.d("DEBUG1", response.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -315,22 +331,27 @@ public class PendingRequestInfoDialog extends DialogFragment {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> param = new HashMap<>();
                     // Put request details in the data set
+                    param.put("requestType", requestType);
+                    param.put("roomID", roomID);
                     param.put("userID", teacherID);
                     param.put("courseID", courseID);
-                    param.put("dayOfWeek", day);
+                    param.put("dayOfWeek", dayNum);
                     param.put("slot", slot);
                     param.put("length", length);
-                    param.put("requestType", requestType);
                     return param;
                 }
             };
             //Execute request
-            //Volleyton.getInstance(getContext()).addToRequestQueue(request);
+            request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                                          DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            dialog.show();
+            Volleyton.getInstance(getContext()).addToRequestQueue(request);
         }
     }
 
     /**
      * This function is how the activity will send arguments to the dialog.
+     *
      * @param args: Bundle: must contain all the required request perimiters
      */
     @Override
