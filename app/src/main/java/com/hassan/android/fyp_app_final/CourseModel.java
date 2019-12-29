@@ -1,22 +1,18 @@
 package com.hassan.android.fyp_app_final;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
-
 import java.util.Calendar;
 import java.util.Locale;
 
 public class CourseModel {
 
-    private String mRoom;
-    private String mRoomName;
-    private String mCourseID;
-    private String mCourseName;
-    private String mDay;
-    private String mSlot;
-    private String mLength;
-    private int mAttendance;
+    private String  mRoom;
+    private String  mRoomName;
+    private String  mCourseID;
+    private String  mCourseName;
+    private String  mDay;
+    private String  mSlot;
+    private String  mLength;
+    private int     mAttendance;
     private boolean mIsActive;
     private boolean mAttendanceAdded;
 
@@ -30,7 +26,8 @@ public class CourseModel {
      * @param room:       Room ID
      * @param courseID:   Course ID
      */
-    public CourseModel(String courseName, String day, String slot, String length, String room, String courseID, String attendance) {
+    public CourseModel(String courseName, String day, String slot, String length, String room, String courseID,
+            String attendance) {
         mCourseName = courseName;
         mDay = day;
         mSlot = slot;
@@ -40,8 +37,7 @@ public class CourseModel {
         if (attendance == null || attendance.isEmpty() || attendance.equals("NA")) {
             mAttendance = -1;
             mAttendanceAdded = false;
-        }
-        else {
+        } else {
             mAttendance = Integer.parseInt(attendance);
         }
         mRoom = room;
@@ -78,14 +74,15 @@ public class CourseModel {
         //Monday | 1st slot | 2 sessions
         daySlotLength += cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.US);
         daySlotLength += " | " + mSlot;
-        if (Integer.parseInt(mSlot) == 1)
+        if (Integer.parseInt(mSlot) == 1) {
             daySlotLength += "st slot";
-        else if (Integer.parseInt(mSlot) == 2)
+        } else if (Integer.parseInt(mSlot) == 2) {
             daySlotLength += "nd slot";
-        else if (Integer.parseInt(mSlot) == 3)
+        } else if (Integer.parseInt(mSlot) == 3) {
             daySlotLength += "rd slot";
-        else
+        } else {
             daySlotLength += "th slot";
+        }
         daySlotLength += " | " + mLength + " sessions";
         return daySlotLength;
     }
@@ -119,6 +116,7 @@ public class CourseModel {
 
     /**
      * Function to get the attendance fo the current course
+     *
      * @return int: attendance
      */
     public int getAttendance() {
@@ -127,6 +125,7 @@ public class CourseModel {
 
     /**
      * Function to set the attendance of the course
+     *
      * @param attendance: int: attendance
      */
     public void setAttendance(int attendance) {
@@ -181,7 +180,8 @@ public class CourseModel {
         int slot = MainActivity.getCurrentSlot();
         if (Integer.parseInt(mDay) == day && Integer.parseInt(mSlot) == slot) {
             answer = true;
-        } else if (Integer.parseInt(mDay) == day && Integer.parseInt(mLength) == 2 && Integer.parseInt(mSlot) + 1 == slot + 1) {
+        } else if (Integer.parseInt(mDay) == day && Integer.parseInt(mLength) == 2 &&
+                   Integer.parseInt(mSlot) + 1 == slot + 1) {
             answer = true;
         } else {
             answer = false;

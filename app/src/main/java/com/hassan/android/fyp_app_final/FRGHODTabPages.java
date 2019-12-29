@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ public class FRGHODTabPages extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        userID = "";
         View view = inflater.inflate(R.layout.fragment_frghodtab_pages, container, false);
         return view;
     }
@@ -34,7 +34,7 @@ public class FRGHODTabPages extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         tabLayout = view.findViewById(R.id.hod_tabs);
         viewPager = view.findViewById(R.id.hod_tabs_pager);
-        viewPagerAdapter = new HODPagerAdapter(getActivity().getSupportFragmentManager());
+        viewPagerAdapter = new HODPagerAdapter(getActivity().getSupportFragmentManager(), userID);
 
 
         viewPager.setAdapter(viewPagerAdapter);

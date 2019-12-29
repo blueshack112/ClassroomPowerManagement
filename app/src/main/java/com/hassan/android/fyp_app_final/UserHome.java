@@ -1,6 +1,7 @@
 package com.hassan.android.fyp_app_final;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -168,5 +169,12 @@ public class UserHome extends AppCompatActivity {
      */
     public static boolean isListDestroyed() {
         return listDestroyed;
+    }
+
+    /**
+     * Function that sends its context to whoever asks for it
+     */
+    public static Context getContext() {
+        return getContext();
     }
 }

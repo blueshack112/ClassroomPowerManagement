@@ -34,27 +34,27 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     //Connection URL 192.168.18.104:4444
-    public static final String URL = "192.168.18.4";
+    public static final String    URL                           = "192.168.18.4";
     //Account Types
-    public static final String ACCOUNT_TYPE_TEACHER = "Teacher";
-    public static final String ACCOUNT_TYPE_HOD = "HOD";
-    public static final String ACCOUNT_TYPE_QMD = "QMD";
+    public static final String    ACCOUNT_TYPE_TEACHER          = "Teacher";
+    public static final String    ACCOUNT_TYPE_HOD              = "HOD";
+    public static final String    ACCOUNT_TYPE_QMD              = "QMD";
     //Designations
-    public static final String TEACHER_DESIGNATION_ASST_PROF = "asst_prof";
-    public static final String TEACHER_DESIGNATION_HOD = "HOD";
-    public static final String TEACHER_DESIGNATION_QMD = "QMD";
+    public static final String    TEACHER_DESIGNATION_ASST_PROF = "asst_prof";
+    public static final String    TEACHER_DESIGNATION_HOD       = "HOD";
+    public static final String    TEACHER_DESIGNATION_QMD       = "QMD";
     //Class schedule slots
-    public static final LocalTime SLOT_TIMINGS_1 = LocalTime.parse("08:30:00");
-    public static final LocalTime SLOT_TIMINGS_2 = LocalTime.parse("09:30:00");
-    public static final LocalTime SLOT_TIMINGS_3 = LocalTime.parse("10:30:00");
-    public static final LocalTime SLOT_TIMINGS_4 = LocalTime.parse("11:30:00");
-    public static final LocalTime SLOT_TIMINGS_5 = LocalTime.parse("13:10:00");
-    public static final LocalTime SLOT_TIMINGS_6 = LocalTime.parse("14:10:00");
-    public static final LocalTime SLOT_TIMINGS_7 = LocalTime.parse("15:05:00");
-    public static final LocalTime SLOT_TIMINGS_END = LocalTime.parse("16:00:00");
+    public static final LocalTime SLOT_TIMINGS_1                = LocalTime.parse("08:30:00");
+    public static final LocalTime SLOT_TIMINGS_2                = LocalTime.parse("09:30:00");
+    public static final LocalTime SLOT_TIMINGS_3                = LocalTime.parse("10:30:00");
+    public static final LocalTime SLOT_TIMINGS_4                = LocalTime.parse("11:30:00");
+    public static final LocalTime SLOT_TIMINGS_5                = LocalTime.parse("13:10:00");
+    public static final LocalTime SLOT_TIMINGS_6                = LocalTime.parse("14:10:00");
+    public static final LocalTime SLOT_TIMINGS_7                = LocalTime.parse("15:05:00");
+    public static final LocalTime SLOT_TIMINGS_END              = LocalTime.parse("16:00:00");
     //Variable Declaration
-    private Button loginButton;
-    private TextView idText, passwordText;
+    private             Button    loginButton;
+    private             TextView  idText, passwordText;
     private TextView forgotPassword;
 
     /**
@@ -284,8 +284,7 @@ public class MainActivity extends AppCompatActivity {
                                     new AlertDialog.Builder(MainActivity.this).setTitle("Wrong Account Type!")
                                                                               .setMessage("QMD accounts are not " +
                                                                                           "available on the " +
-                                                                                          "Android " +
-                                                                                          "app!")
+                                                                                          "Android " + "app!")
                                                                               .setPositiveButton(
                                                                                       android.R.string.yes,
                                                                                       new DialogInterface.OnClickListener() {
@@ -303,8 +302,7 @@ public class MainActivity extends AppCompatActivity {
                                     new AlertDialog.Builder(MainActivity.this).setTitle("Wrong Account Type!")
                                                                               .setMessage("QMD accounts are not " +
                                                                                           "available on the " +
-                                                                                          "Android " +
-                                                                                          "app!")
+                                                                                          "Android " + "app!")
                                                                               .setPositiveButton(
                                                                                       android.R.string.yes,
                                                                                       new DialogInterface.OnClickListener() {

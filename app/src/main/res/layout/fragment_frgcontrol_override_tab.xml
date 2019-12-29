@@ -66,6 +66,19 @@
                 android:layout_weight="1" />
 
             <RadioButton
+                android:id="@+id/override_rb_cant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:text="@string/override_radio_button_cant" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <RadioButton
                 android:id="@+id/override_rb_later"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
         </RadioGroup>
 
         <android.support.constraint.ConstraintLayout

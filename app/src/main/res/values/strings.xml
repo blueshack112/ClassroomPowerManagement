@@ -45,6 +45,7 @@
     <string name="override_schedule_heading">Schedule: </string>
     <string name="override_radio_button_right_now">Right Now</string>
     <string name="override_radio_button_later">Later</string>
+    <string name="override_radio_button_cant">Invalid Time To Schedule</string>
     <string name="override_schedule_select">Select Date, Slot, and Length</string>
     <string name="override_schedule_date">Day:</string>
     <string name="override_schedule_slot">Slot:</string>

@@ -1,18 +1,9 @@
 package com.hassan.android.fyp_app_final;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,20 +23,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 // TODO: Documentation
 
 public class FRGTeacherScheduleList extends Fragment {
 
     // Variables used majorly
-    protected String userID = "";
-    private RecyclerView recycler;
+    protected String                      userID = "";
     protected ScheduleListRecyclerAdapter adapter;
-    protected ArrayList<CourseModel> courses;
-    private ListUpdater updateList;
+    protected ArrayList<CourseModel>      courses;
+    private   RecyclerView                recycler;
+    private   ListUpdater                 updateList;
 
 
     public FRGTeacherScheduleList() {
@@ -77,7 +66,8 @@ public class FRGTeacherScheduleList extends Fragment {
         courses = new ArrayList<CourseModel>();
         recycler = view.findViewById(R.id.teacher_schedule_recycler_list);
         adapter = new ScheduleListRecyclerAdapter(getActivity(), courses);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(layoutManager);
 
@@ -88,8 +78,8 @@ public class FRGTeacherScheduleList extends Fragment {
         final String temp = userID;
 
         //Start calling schedule data and run the dialog so that user wont do anything
-        final ProgressDialog dialog = ProgressDialog.show(getContext(), "Fetching Schedule",
-                "Fetching your Schedule, Please wait...", true);
+        final ProgressDialog dialog = ProgressDialog
+                .show(getContext(), "Fetching Schedule", "Fetching your Schedule, Please wait...", true);
 
         // URL of the API
         String url = "http://" + MainActivity.URL + "/AreebaFYP/teacherSchedule.php";
@@ -113,8 +103,14 @@ public class FRGTeacherScheduleList extends Fragment {
                             JSONObject tempObject = scheduleItems.getJSONObject(i);
 
                             // Add the course model to the dataset
-                            courses.add(new CourseModel(tempObject.getString("courseName"), tempObject.getString("dayOfWeek"), tempObject.getString("slot"), tempObject.getString("classLength"), tempObject.getString("roomID"), tempObject.getString("courseID"), "-1"));
-                            checkIfAttendanceUpdated(courses.size() - 1, tempObject.getString("roomID"), tempObject.getString("courseID"));
+                            courses.add(new CourseModel(tempObject.getString("courseName"),
+                                                        tempObject.getString("dayOfWeek"),
+                                                        tempObject.getString("slot"),
+                                                        tempObject.getString("classLength"),
+                                                        tempObject.getString("roomID"),
+                                                        tempObject.getString("courseID"), "-1"));
+                            checkIfAttendanceUpdated(courses.size() - 1, tempObject.getString("roomID"),
+                                                     tempObject.getString("courseID"));
                             adapter.notifyDataSetChanged();
                         }
                     } else {
@@ -188,10 +184,12 @@ public class FRGTeacherScheduleList extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String localizedMessage = error.getLocalizedMessage();
-                if (localizedMessage != null)
+                if (localizedMessage != null) {
                     Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
-                else
-                    Toast.makeText(getContext(), "Check your internet connection and try again.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getContext(), "Check your internet connection and try again.",
+                                   Toast.LENGTH_LONG).show();
+                }
             }
         };
 
@@ -208,6 +206,15 @@ public class FRGTeacherScheduleList extends Fragment {
         };
         //Execute request
         Volleyton.getInstance(getContext()).addToRequestQueue(request);
+    }
+
+    /**
+     * Function that returns the courses of the teacher to whoever asks for it
+     *
+     * @return ArraList<CourseModel>: set of courses of the user
+     */
+    public ArrayList<CourseModel> getCourses() {
+        return courses;
     }
 
     // This class will contain the functinality use to update the list
@@ -236,7 +243,9 @@ public class FRGTeacherScheduleList extends Fragment {
 
                 // For every course item present inside the courses list...
                 for (int i = 0; i < courses.size(); i++) {
-                    // Log.d("CourseCondition...", courses.get(i).getCourseName() + "\t" + Integer.toString(courses.get(i).getAttendance()) + "\t" + Boolean.toString(courses.get(i).isAttendanceAdded()));
+                    // Log.d("CourseCondition...", courses.get(i).getCourseName() + "\t" + Integer.toString
+                    // (courses.get(i).getAttendance()) + "\t" + Boolean.toString(courses.get(i)
+                    // .isAttendanceAdded()));
                     // Check if the course's time to get active has arrived and set its active
                     // status variable to true
                     if (courses.get(i).isTime()) {
@@ -247,8 +256,10 @@ public class FRGTeacherScheduleList extends Fragment {
 
                     // If the course is active and its attendance has been set but it is not updated
                     // In the database, call the function that tries to update the database
-                    if (courses.get(i).isActive() && courses.get(i).getAttendance() < 0 && !courses.get(i).isAttendanceAdded())
+                    if (courses.get(i).isActive() && courses.get(i).getAttendance() < 0 &&
+                        !courses.get(i).isAttendanceAdded()) {
                         courses.set(i, retryAttendanceUpdate(courses.get(i)));
+                    }
 
                 }
 
@@ -319,10 +330,12 @@ public class FRGTeacherScheduleList extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     String localizedMessage = error.getLocalizedMessage();
-                    if (localizedMessage != null)
+                    if (localizedMessage != null) {
                         Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
-                    else
-                        Toast.makeText(getContext(), "Check your internet connection and try again.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Check your internet connection and try again.",
+                                       Toast.LENGTH_LONG).show();
+                    }
                 }
             };
 
@@ -343,15 +356,6 @@ public class FRGTeacherScheduleList extends Fragment {
 
             return course;
         }
-    }
-
-    /**
-     * Function that returns the courses of the teacher to whoever asks for it
-     *
-     * @return ArraList<CourseModel>: set of courses of the user
-     */
-    public ArrayList<CourseModel> getCourses() {
-        return courses;
     }
 
 }

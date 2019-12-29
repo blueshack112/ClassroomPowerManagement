@@ -2,10 +2,7 @@ package com.hassan.android.fyp_app_final;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.BundleCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,8 +30,8 @@ import java.util.Map;
 //TODO: Documentation
 
 public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingRequestRecyclerAdapter.Holder> {
-    private ArrayList<RequestModel> requests;
-    private Context                 context;
+    private ArrayList<RequestModel>       requests;
+    private Context                       context;
     private PendingRequestRecyclerAdapter self;
 
     public PendingRequestRecyclerAdapter(Context context) {
@@ -60,38 +57,40 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
 
         // Set length to general reason
         if (requests.get(position).getGeneralReason().length() > 15) {
-            holder.generalReasonText.setText(requests.get(position).getGeneralReason().substring(0,15)+"...");
+            holder.generalReasonText.setText(requests.get(position).getGeneralReason().substring(0, 15) + "...");
         } else {
             holder.generalReasonText.setText(requests.get(position).getGeneralReason());
         }
 
         // Setting up the button functionality
-        holder.detailsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment infoDialog = new PendingRequestInfoDialog();
+        if (!requests.get(position).getCourseName().equals("No Requests Present")) {
+            holder.detailsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogFragment infoDialog = new PendingRequestInfoDialog();
 
-                // Creating the bundle through which the data will be sent
-                Bundle b = new Bundle();
-                b.putString("requestType", requests.get(position).getRequestType());
-                b.putString("teacherName", requests.get(position).getRequestor());
-                b.putString("teacherID", requests.get(position).getRequestorID());
-                b.putString("courseName", requests.get(position).getCourseName());
-                b.putString("courseID", requests.get(position).getCourseID());
-                b.putString("room", requests.get(position).getRoomID());
-                b.putString("day", requests.get(position).getDayOfWeek());
-                b.putString("slot", requests.get(position).getSlot());
-                b.putString("length", requests.get(position).getLength());
-                b.putString("generalReason", requests.get(position).getGeneralReason());
-                b.putString("message", requests.get(position).getMessage());
-                b.putInt("position", position);
+                    // Creating the bundle through which the data will be sent
+                    Bundle b = new Bundle();
+                    b.putString("requestType", requests.get(position).getRequestType());
+                    b.putString("teacherName", requests.get(position).getRequestor());
+                    b.putString("teacherID", requests.get(position).getRequestorID());
+                    b.putString("courseName", requests.get(position).getCourseName());
+                    b.putString("courseID", requests.get(position).getCourseID());
+                    b.putString("room", requests.get(position).getRoomID());
+                    b.putString("day", requests.get(position).getDayOfWeek());
+                    b.putString("slot", requests.get(position).getSlot());
+                    b.putString("length", requests.get(position).getLength());
+                    b.putString("generalReason", requests.get(position).getGeneralReason());
+                    b.putString("message", requests.get(position).getMessage());
+                    b.putInt("position", position);
 
-                // Send the arguments and show the dialog
-                infoDialog.setArguments(b);
-                ((PendingRequestInfoDialog)infoDialog).setAdapterObject(self);
-                infoDialog.show(((AppCompatActivity)context).getSupportFragmentManager(), "infoDialog");
-            }
-        });
+                    // Send the arguments and show the dialog
+                    infoDialog.setArguments(b);
+                    ((PendingRequestInfoDialog) infoDialog).setAdapterObject(self);
+                    infoDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "infoDialog");
+                }
+            });
+        }
     }
 
     @Override
@@ -164,7 +163,7 @@ public class PendingRequestRecyclerAdapter extends RecyclerView.Adapter<PendingR
         Volleyton.getInstance(context).addToRequestQueue(request);
     }
 
-    public void deleteItem (int position) {
+    public void deleteItem(int position) {
         requests.remove(position);
         notifyDataSetChanged();
     }

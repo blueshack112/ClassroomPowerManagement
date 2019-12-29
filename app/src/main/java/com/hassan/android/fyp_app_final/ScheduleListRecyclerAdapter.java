@@ -29,9 +29,9 @@ import java.util.Map;
 public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleListRecyclerAdapter.Holder> {
 
     private ArrayList<CourseModel> courses;
-            // Will contian all the instances of courses
+    // Will contian all the instances of courses
     private Context                context;
-            // Required for stuff like Toast
+    // Required for stuff like Toast
 
     /**
      * Necessary contructor for adapter to initialize properly
@@ -62,7 +62,8 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
         holder.courseNameText.setText(courses.get(position).getCourseName());
 
         // Set the slot text to the slot of the course
-        holder.courseDaySlotText.setText(courses.get(position).getCourseDaySlot() + " | " + courses.get(position).getRoomName());
+        holder.courseDaySlotText
+                .setText(courses.get(position).getCourseDaySlot() + " | " + courses.get(position).getRoomName());
 
         // if the courses is active, show green circular light or else show red
         if (courses.get(position).isActive()) {

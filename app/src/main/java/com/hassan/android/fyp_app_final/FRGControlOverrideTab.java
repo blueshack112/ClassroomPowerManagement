@@ -1,9 +1,12 @@
 package com.hassan.android.fyp_app_final;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,27 +38,35 @@ import java.util.Map;
 @SuppressWarnings({"FieldCanBeLocal", "StringConcatenationInLoop", "ConstantConditions"})
 public class FRGControlOverrideTab extends Fragment {
 
-    private Spinner roomSelectionSpinner;
+    // Views
+    private View view;
+
+    // Spinners
+    private Spinner                 roomSelectionSpinner;
     private SelectionSpinnerAdapter roomSelectionSpinnerAdapter;
 
-    private Spinner daySelectionSpinner;
+    private Spinner                 daySelectionSpinner;
     private SelectionSpinnerAdapter daySelectionSpinnerAdapter;
 
-    private Spinner slotSelectionSpinner;
+    private Spinner                 slotSelectionSpinner;
     private SelectionSpinnerAdapter slotSelectionSpinnerAdapter;
 
-    private RadioGroup scheduleSelectionRadioGroup;
+    // Radio groups and constraints
+    private RadioGroup       scheduleSelectionRadioGroup;
     private ConstraintLayout scheduleSelectionConstraint;
 
-    private int lengthAllowed;
+    // Number Pickers
+    private int          lengthAllowed;
     private NumberPicker lengthSelectionNumberPicker;
 
+    // Buttons
     private Button openAllButton, closeAllButton;
     private Button submitButton;
 
+    // Data
     private ArrayList<Switch> switches;
-
-    private View view;
+    private String            userID;
+    private Context           context;
 
     /**
      * Empty constructor is required
@@ -68,8 +79,7 @@ public class FRGControlOverrideTab extends Fragment {
      * Overridden function where everything will be setup
      */
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_frgcontrol_override_tab, container, false);
 
         //Room selection setup
@@ -118,6 +128,7 @@ public class FRGControlOverrideTab extends Fragment {
         // setup submit button
         submitButton = view.findViewById(R.id.override_bt_submit);
         setupSubmitButton();
+        context = getContext();
 
         return view;
     }
@@ -236,17 +247,22 @@ public class FRGControlOverrideTab extends Fragment {
      * Function that will setup the radio group
      */
     private void setupScheduleSelectionRadioGroup() {
-        scheduleSelectionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // If later is selected, show the scheduling constraint or else hide it
-                if (checkedId == R.id.override_rb_later) {
-                    scheduleSelectionConstraint.setVisibility(View.VISIBLE);
-                } else {
-                    scheduleSelectionConstraint.setVisibility(View.GONE);
-                }
-            }
-        });
+        // if today is friday. Turn off the later functionality
+        if (MainActivity.getCurrentDayOfWeek() == 5) {
+            view.findViewById(R.id.override_rb_later).setVisibility(View.GONE);
+        }
+        if (MainActivity.getCurrentDayOfWeek() == 6 || MainActivity.getCurrentDayOfWeek() == 7) {
+            view.findViewById(R.id.override_rb_later).setVisibility(View.GONE);
+            view.findViewById(R.id.override_rb_right_now).setVisibility(View.GONE);
+        }
+        if (MainActivity.getCurrentSlot() == -1) {
+            view.findViewById(R.id.override_rb_right_now).setVisibility(View.GONE);
+        }
+        if (view.findViewById(R.id.override_rb_right_now).getVisibility() == View.GONE &&
+            view.findViewById(R.id.override_rb_later).getVisibility() == View.GONE) {
+            view.findViewById(R.id.override_rb_cant).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.override_bt_submit).setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -270,179 +286,20 @@ public class FRGControlOverrideTab extends Fragment {
     }
 
     /**
-     * Function that will setup the submit button functionality.
-     * It will perform all the necessary validations and then initiate the API call if all is good
+     * Function that sets the userID when this fragment is being loaded
+     *
+     * @param x
      */
-    private void setupSubmitButton() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onClick(View v) {
-                int dayOfWeek = -1;
-                String room;
-                int slot;
-                int length;
-
-                // If a selection type is not selected, send error and end function
-                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == -1) {
-                    Toast.makeText(getContext(), "Please select a schedule type", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Get room ID
-                final String roomSelection = roomSelectionSpinner.getSelectedItem().toString();
-                char roomChar = roomSelection.charAt(roomSelection.length() - 1);
-                room = Integer.toString(1000 + (roomChar - 64));
-
-                // Get dayOfWeek
-                // If 'later' is selected, get the user-selected day. Else, get current day
-                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
-                    String day = daySelectionSpinner.getSelectedItem().toString();
-                    switch (day) {
-                        case "Monday":
-                            dayOfWeek = 1;
-                            break;
-                        case "Tuesday":
-                            dayOfWeek = 2;
-                            break;
-                        case "Wednesday":
-                            dayOfWeek = 3;
-                            break;
-                        case "Thursday":
-                            dayOfWeek = 4;
-                            break;
-                        case "Friday":
-                            dayOfWeek = 5;
-                            break;
-                    }
-
-                    // Check if today is Friday
-                    if (MainActivity.getCurrentDayOfWeekAsIndex() == 4) {
-                        Toast.makeText(getContext(), "Today is Friday. Please use the \"Right " + "Now\" option.",
-                                       Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                } else {
-                    // If the 'right now' option is selected. Get the current day
-                    dayOfWeek = MainActivity.getCurrentDayOfWeek();
-                }
-
-                // Get Slot
-                // If 'later' is selected, get the user-selected slot. Else, get current slot
-                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
-                    slot = slotSelectionSpinner.getSelectedItemPosition() + 1;
-                } else {
-                    slot = MainActivity.getCurrentSlot();
-                }
-
-                // Get Length
-                // If 'later' is selected, get user-selected length. Else, get the length that
-                // will take from current slot to the end of the day
-                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
-                    length = lengthSelectionNumberPicker.getValue();
-                } else {
-                    length = slotSelectionSpinner.getCount() - MainActivity.getCurrentSlot();
-                }
-
-                // This statement will only be reached if everything was validated and loaded
-                // properly
-                if (true) {
-                    String msg = "";
-                    RadioButton rb = view.findViewById(scheduleSelectionRadioGroup.getCheckedRadioButtonId());
-                    msg += roomSelectionSpinner.getSelectedItem().toString() + " | ";
-                    msg += rb.getText() + " | ";
-                    if (rb.getId() == R.id.override_rb_later) {
-                        msg += dayOfWeek + " | ";
-                        msg += slot + " | ";
-                        msg += length + " | ";
-                    }
-
-                    // Switch message
-                    for (int i = 0; i < switches.size(); i++)
-                        if (switches.get(i).isChecked()) {
-                            msg += "ON ";
-                        } else {
-                            msg += "OFF ";
-                        }
-
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
-                    if (true) {
-                        return;
-                    }
-                    //TODO: redo this whole function from here
-                    //Start preparing data to send to server
-                    //TODO: Create the php receiver for this request!
-                    String url = "http://" + MainActivity.URL + "/AreebaFYP/scheduleRoomActivity" + ".php";
-
-                    //Setting up response handler
-                    Response.Listener listener = new Response.Listener() {
-                        @Override
-                        public void onResponse(@NonNull Object response) {
-                            try {
-                                JSONObject schedResponse = new JSONObject(response.toString());
-                                Log.d("AAAAAAAAAAAAAAAAAAAA", response.toString());
-                                if (schedResponse.getBoolean("successful")) {
-                                    JSONArray scheduleItems = schedResponse.getJSONArray("scheduleItems");
-
-                                } else {
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    Response.ErrorListener errorListener = new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(@NonNull VolleyError error) {
-                            Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
-                        }
-                    };
-
-                    //Initialize request string with POST method
-                    final int finalSlot = slot;
-                    final int finalLength = length;
-                    final String finalRoom = room;
-                    final int finalDayOfWeek = dayOfWeek;
-                    StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
-                        @Override
-                        protected Map<String, String> getParams() {
-                            Map<String, String> param = new HashMap<>();
-
-                            //Put room id in data set
-                            param.put("roomID", finalRoom);
-
-                            //Put schedule type in data set
-                            if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
-                                param.put("scheduleType", "Later");
-                            } else {
-                                param.put("scheduleType", "Now");
-                            }
-
-                            // Put day, slot, and length
-                            param.put("day", Integer.toString(finalDayOfWeek));
-                            param.put("slot", Integer.toString(finalSlot));
-                            param.put("length", Integer.toString(finalLength));
-
-                            //Put relay controls selected by user
-                            for (int i = 0; i < switches.size(); i++)
-                                param.put("relay" + (i + 1), Boolean.toString(switches.get(i).isChecked()));
-                            return param;
-                        }
-                    };
-                    //Execute request
-                    Volleyton.getInstance(getContext()).addToRequestQueue(request);
-                }
-            }
-        });
+    public void setUserID(String x) {
+        userID = x;
     }
 
     /**
      * Function that will call the php script that will get the current relays' state and set it to the switches.
-     *
+     * <p>
      * This function will also setup the listener that will set all switches to off if the 'later' radio button
      * is selected and again call the update function when 'right now' radio button is selected.
-     *
+     * <p>
      * The same will be done for the roomSelector's on item selected listener in this function
      */
     private void setupSwitches() {
@@ -455,6 +312,11 @@ public class FRGControlOverrideTab extends Fragment {
                     closeAllSwitches();
                 } else {
                     updateSwitches();
+                }
+                if (i == R.id.override_rb_later) {
+                    scheduleSelectionConstraint.setVisibility(View.VISIBLE);
+                } else {
+                    scheduleSelectionConstraint.setVisibility(View.GONE);
                 }
             }
         });
@@ -530,5 +392,169 @@ public class FRGControlOverrideTab extends Fragment {
         };
         //Execute request
         Volleyton.getInstance(getContext()).addToRequestQueue(request);
+    }
+
+    /**
+     * Function that will setup the submit button functionality.
+     * It will perform all the necessary validations and then initiate the API call if all is good
+     */
+    private void setupSubmitButton() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onClick(View v) {
+                int dayOfWeek = -1;
+                String room;
+                int slot;
+                int length;
+
+                // If a selection type is not selected, send error and end function
+                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(getContext(), "Please select a schedule type", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Get room ID
+                final String roomSelection = roomSelectionSpinner.getSelectedItem().toString();
+                char roomChar = roomSelection.charAt(roomSelection.length() - 1);
+                room = Integer.toString(1000 + (roomChar - 64));
+
+                // Get dayOfWeek
+                // If 'later' is selected, get the user-selected day. Else, get current day
+                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
+                    String day = daySelectionSpinner.getSelectedItem().toString();
+                    switch (day) {
+                        case "Monday":
+                            dayOfWeek = 1;
+                            break;
+                        case "Tuesday":
+                            dayOfWeek = 2;
+                            break;
+                        case "Wednesday":
+                            dayOfWeek = 3;
+                            break;
+                        case "Thursday":
+                            dayOfWeek = 4;
+                            break;
+                        case "Friday":
+                            dayOfWeek = 5;
+                            break;
+                    }
+
+                    // Check if today is Friday
+                    if (MainActivity.getCurrentDayOfWeekAsIndex() == 4) {
+                        Toast.makeText(getContext(), "Today is Friday. Please use the \"Right " + "Now\" option.",
+                                       Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } else {
+                    // If the 'right now' option is selected. Get the current day
+                    dayOfWeek = MainActivity.getCurrentDayOfWeek();
+                }
+
+                // Get Slot
+                // If 'later' is selected, get the user-selected slot. Else, get current slot
+                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
+                    slot = slotSelectionSpinner.getSelectedItemPosition() + 1;
+                } else {
+                    slot = MainActivity.getCurrentSlot();
+                }
+
+                // Get Length
+                // If 'later' is selected, get user-selected length. Else, get the length that
+                // will take from current slot to the end of the day
+                if (scheduleSelectionRadioGroup.getCheckedRadioButtonId() == R.id.override_rb_later) {
+                    length = lengthSelectionNumberPicker.getValue();
+                } else {
+                    length = slotSelectionSpinner.getCount() + 1 - MainActivity.getCurrentSlot();
+                }
+
+                // This statement will only be reached if everything was validated and loaded
+                // properly
+                // TODO: configure this request properly and create its respective php receiver
+                // TODO: configure room status tab for HOD override too
+                String msg = "";
+                RadioButton rb = view.findViewById(scheduleSelectionRadioGroup.getCheckedRadioButtonId());
+                msg += roomSelectionSpinner.getSelectedItem().toString() + " | ";
+                msg += rb.getText() + " | ";
+                if (rb.getId() == R.id.override_rb_later) {
+                    msg += dayOfWeek + " | ";
+                    msg += slot + " | ";
+                    msg += length + " | ";
+                }
+
+                // Switch message
+                for (int i = 0; i < switches.size(); i++) {
+                    if (switches.get(i).isChecked()) {
+                        msg += "ON ";
+                    } else {
+                        msg += "OFF ";
+                    }
+                }
+
+                //Start preparing data to send to server
+                //TODO: Create the php receiver for this request!
+                String url = "http://" + MainActivity.URL + "/AreebaFYP/scheduleOverride.php";
+
+                //Setting up response handler
+                Response.Listener listener = new Response.Listener() {
+                    @Override
+                    public void onResponse(@NonNull Object response) {
+                        try {
+                            JSONObject overrideResponse = new JSONObject(response.toString());
+                            AlertDialog dialog = new AlertDialog.Builder(context)
+                                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create();
+                            if (overrideResponse.getBoolean("successful")) {
+                                dialog.setTitle("Successfully Scheduled!");
+                                dialog.setMessage("The schedule was overridden successfully.");
+                            } else {
+                                dialog.setTitle("Successfully Scheduled!");
+                                dialog.setMessage("The schedule could not overridden. Try again some other time.");
+                            }
+                            dialog.show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }; Response.ErrorListener errorListener = new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(@NonNull VolleyError error) {
+                        Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
+                    }
+                };
+
+                //Initialize request string with POST method
+                final int finalSlot = slot;
+                final int finalLength = length;
+                final String finalRoom = room;
+                final int finalDayOfWeek = dayOfWeek;
+                StringRequest request = new StringRequest(Request.Method.POST, url, listener, errorListener) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> param = new HashMap<>();
+                        //Put room id and user id in dataset
+                        param.put("roomID", finalRoom);
+                        param.put("userID", userID);
+
+                        // Put day, slot, and length
+                        param.put("day", Integer.toString(finalDayOfWeek));
+                        param.put("slot", Integer.toString(finalSlot));
+                        param.put("length", Integer.toString(finalLength));
+
+                        //Put relay controls selected by user
+                        for (int i = 0; i < switches.size(); i++)
+                            param.put("relay" + (i + 1), Boolean.toString(switches.get(i).isChecked()));
+                        return param;
+                    }
+                };
+                //Execute request
+                Volleyton.getInstance(getContext()).addToRequestQueue(request);
+            }
+        });
     }
 }
