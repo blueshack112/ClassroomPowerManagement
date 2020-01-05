@@ -77,7 +77,9 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
         // Set the holder's attendance entered status to the course's attendance entered status
         // so that if the application is restarted and the attendance is entered in the database
         // then the app wont allow the user the enter the attendance
-        holder.attendanceEntered = courses.get(position).isAttendanceAdded();
+        if (courses.get(position).getAttendance() != -1) {
+            holder.changeAttendanceEntered(courses.get(position).isAttendanceAdded());
+        }
 
         // on click listener for for the add attendance button
         holder.attendanceButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +96,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                 attendanceBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        dialog.cancel();
                     }
                 });
 
@@ -115,10 +117,6 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                         // Set the attendance of the course item to the one entered by user
                         courses.get(position).setAttendance(attendance);
 
-                        // Set  the current holder's attendance entered to true so that the teacher cannot enter
-                        // again
-                        holder.changeAttendanceEntered(true);
-
                         //Setting up response handler
                         Response.Listener listener = new Response.Listener() {
                             @Override
@@ -130,6 +128,27 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                     // Get the successful boolean from the response to see if the attendance was
                                     // made or not
                                     addAttendanceSuccess = addAttendanceResponse.getBoolean("successful");
+
+
+                                    // Check if the attendance was already entered
+                                    boolean alreadyAdded = addAttendanceResponse.getBoolean("alreadyEntered");
+                                    if (alreadyAdded) {
+                                        int tempAttendnace = addAttendanceResponse.getInt("attendanceInTable");
+                                        holder.changeAttendanceEntered(true);
+                                        courses.get(position).setAttendance(tempAttendnace);
+                                        courses.get(position).setAttendanceAdded(true);
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("Attendance Already Entered!");
+                                        builder.setMessage("You have already entered attendance for this class.");
+                                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        builder.create().show();
+                                        return;
+                                    }
 
                                     // Check if the attendance entered was more than max students enrolled in
                                     // the course
@@ -149,7 +168,8 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                                                                                              int which) {
                                                                                                          dialog.dismiss();
                                                                                                      }
-                                                                                                 });
+                                                                                                 }).create()
+                                                                              .show();
                                         holder.changeAttendanceEntered(false);
                                         courses.get(position).setAttendance(-1);
                                         courses.get(position).setAttendanceAdded(false);
@@ -158,19 +178,22 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
 
                                     // set the attendance added status of the courses to the success variable so
                                     // that
-                                    // if it was false, attendance can be added again in the belo update function
+                                    // if it was false, attendance can be added again in the below update function
                                     courses.get(position).setAttendanceAdded(addAttendanceSuccess);
 
+                                    // Set  the current holder's attendance entered to true so that the teacher
+                                    // cannot enter
+                                    // again
+                                    Log.d("attendanceDebug", "onResponse: changed to true");
+                                    holder.changeAttendanceEntered(true);
 
                                     // React based on success statuses
                                     if (addAttendanceSuccess) {
                                         Toast.makeText(context,
                                                        "Attendance is " + tvAttendance.getText().toString() +
-                                                       "\tHolder.Attendance Entered:" +
-                                                       Boolean.toString(holder.attendanceEntered) +
-                                                       "Attendance Upload Success:" +
-                                                       Boolean.toString(addAttendanceSuccess), Toast.LENGTH_SHORT)
-                                             .show();
+                                                       "\tHolder.Attendance Entered:" + holder.attendanceEntered +
+                                                       "Attendance Upload Success:" + addAttendanceSuccess,
+                                                       Toast.LENGTH_SHORT).show();
                                     } else {
                                         Log.d("AttendanceStatus: ", Boolean.toString(addAttendanceSuccess));
                                     }
@@ -207,6 +230,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                 };
                         //Execute request
                         Volleyton.getInstance(context).addToRequestQueue(request);
+                        Log.d("requestMade", "onClick: sending attendance");
 
                         // Dismiss the dialog once this is done
                         dialog.dismiss();
@@ -217,6 +241,25 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                 attendanceBuilder.setView(view);
 
                 //if attendance is already entered, don't enter again.
+
+                // Condition # 1
+                if (courses.get(position).getAttendance() >= 0) {
+                    holder.changeAttendanceEntered(true);
+                    courses.get(position).setAttendanceAdded(true);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Attendance Already Entered!");
+                    builder.setMessage("You have already entered attendance for this class.");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.create().show();
+                    return;
+                }
+
+                // Condition # 2
                 if (holder.attendanceEntered) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Attendance Already Entered!");
@@ -274,6 +317,10 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
 
         public void changeAttendanceEntered(boolean x) {
             attendanceEntered = x;
+        }
+
+        public boolean isAttendanceEntered() {
+            return attendanceEntered;
         }
     }
 }

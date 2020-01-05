@@ -36,7 +36,8 @@ public class UserHome extends AppCompatActivity {
     private TextView userDesignationTextVeiw;
 
     // Fragments
-    FRGTeacherScheduleList teacherScheduleListFragment;
+    private FRGTeacherScheduleList teacherScheduleListFragment;
+    private FRGHODTabPages hodTabPagesFragment;
 
 
     @Override
@@ -78,9 +79,9 @@ public class UserHome extends AppCompatActivity {
             transaction.add(R.id.main_fragment_space, teacherScheduleListFragment);
             transaction.commit();
         } else if (userType.equals(MainActivity.ACCOUNT_TYPE_HOD)) {
-            FRGHODTabPages temp = new FRGHODTabPages();
-            temp.setUserID(userID);
-            transaction.add(R.id.main_fragment_space, temp);
+            hodTabPagesFragment = new FRGHODTabPages();
+            hodTabPagesFragment.setUserID(userID);
+            transaction.add(R.id.main_fragment_space, hodTabPagesFragment);
             transaction.commit();
         }
 
@@ -100,13 +101,14 @@ public class UserHome extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("formdebug", "Form showing..." + item.getItemId() + "\t" + R.id.request + "\t" + userType);
         if (item.getItemId() == R.id.logout) {
             onLogOutClicked();
         }
         else if (userType.equals(MainActivity.ACCOUNT_TYPE_TEACHER) && item.getItemId() == R.id.request) {
             Log.d("formdebug", "Form showing...");
             onRequestClicked();
+        } else if (item.getItemId() == R.id.refresh) {
+            refreshClicked();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,6 +119,11 @@ public class UserHome extends AppCompatActivity {
         DialogFragment formDialog = new ExtraRequestFormDialog();
         Bundle bundle = new Bundle();
         ArrayList<CourseModel> courses = teacherScheduleListFragment.getCourses();
+
+        if (courses.get(0).getCourseName().equals("NA")) {
+            Toast.makeText(this, "No extra requests can be made.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Putting userID
         bundle.putString("userID", userID);
@@ -163,9 +170,31 @@ public class UserHome extends AppCompatActivity {
         logoutAlert.show();
     }
 
+    // Function that will refresh the activity
+    private void refreshClicked() {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        // Reloading the fragment loading process
+        if (userType.equals(MainActivity.ACCOUNT_TYPE_TEACHER)) {
+            // Remove old fragment
+            transaction.remove(teacherScheduleListFragment);
+            teacherScheduleListFragment = new FRGTeacherScheduleList();
+            teacherScheduleListFragment.setUserID(userID);
+            transaction.add(R.id.main_fragment_space, teacherScheduleListFragment);
+            transaction.commit();
+        } else if (userType.equals(MainActivity.ACCOUNT_TYPE_HOD)) {
+            // Remove old fragment
+            transaction.remove(hodTabPagesFragment);
+            hodTabPagesFragment = new FRGHODTabPages();
+            hodTabPagesFragment.setUserID(userID);
+            transaction.add(R.id.main_fragment_space, hodTabPagesFragment);
+            transaction.commit();
+        }
+    }
+
     /**
      * Fucntion that will tell outside functions if the activity is listDestroyed or working
-     * @return
+     * @return boolean: listDestroyed variable state
      */
     public static boolean isListDestroyed() {
         return listDestroyed;

@@ -12,6 +12,7 @@
 
     <!-- MENU BAR STRINGS -->
     <string name="action_menu_logout">Log Out</string>
+    <string name="action_menu_refresh">Refresh</string>
     <string name="action_menu_request">Extra Request</string>
 
     <!-- ROOM STATUS SCHEDULE STRINGS -->

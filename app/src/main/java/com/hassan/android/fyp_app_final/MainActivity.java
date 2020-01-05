@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
         forgotPassword = findViewById(R.id.tv_forgot_password);
 
         //TODO: Remove this debug part
-        idText.setText("1012");
-        passwordText.setText("HamdardHOD123");
+        idText.setText("1001");
+        passwordText.setText("Hamdard123");
 
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override

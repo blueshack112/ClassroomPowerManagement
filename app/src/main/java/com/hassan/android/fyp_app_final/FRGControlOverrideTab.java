@@ -471,7 +471,6 @@ public class FRGControlOverrideTab extends Fragment {
 
                 // This statement will only be reached if everything was validated and loaded
                 // properly
-                // TODO: configure this request properly and create its respective php receiver
                 // TODO: configure room status tab for HOD override too
                 String msg = "";
                 RadioButton rb = view.findViewById(scheduleSelectionRadioGroup.getCheckedRadioButtonId());
@@ -493,7 +492,6 @@ public class FRGControlOverrideTab extends Fragment {
                 }
 
                 //Start preparing data to send to server
-                //TODO: Create the php receiver for this request!
                 String url = "http://" + MainActivity.URL + "/AreebaFYP/scheduleOverride.php";
 
                 //Setting up response handler

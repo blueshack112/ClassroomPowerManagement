@@ -41,9 +41,14 @@ public class CourseModel {
             mAttendance = Integer.parseInt(attendance);
         }
         mRoom = room;
-        // Convert room to room name too
-        char roomchar = (char) (Integer.parseInt(room) - 1000 + 64);
-        mRoomName = "Room " + Character.toString(roomchar);
+
+        if (mRoom != "NA") {
+            // Convert room to room name too
+            char roomchar = (char) (Integer.parseInt(room) - 1000 + 64);
+            mRoomName = "Room " + roomchar;
+        } else {
+            mRoomName = mRoom;
+        }
 
         mCourseID = courseID;
     }
@@ -175,6 +180,8 @@ public class CourseModel {
      * @return boolean: true or false as the active status
      */
     public boolean isTime() {
+        if (mCourseName == "NA")
+            return false;
         boolean answer = false;
         int day = MainActivity.getCurrentDayOfWeek();
         int slot = MainActivity.getCurrentSlot();

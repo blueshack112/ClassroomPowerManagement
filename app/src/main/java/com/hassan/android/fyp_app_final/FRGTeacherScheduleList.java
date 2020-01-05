@@ -151,7 +151,6 @@ public class FRGTeacherScheduleList extends Fragment {
      *
      * @param roomID:   room id of the course
      * @param courseID: course id of the course
-     * @return int: -1 if the attendance is not updated and some number if the attendance is updated
      */
     private void checkIfAttendanceUpdated(final int coursePosition, String roomID, String courseID) {
         final String finalRoomID = roomID;
@@ -217,6 +216,12 @@ public class FRGTeacherScheduleList extends Fragment {
         return courses;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        updateList.cancel(true);
+    }
+
     // This class will contain the functinality use to update the list
     private class ListUpdater extends AsyncTask<String, String, String> {
 
@@ -272,7 +277,7 @@ public class FRGTeacherScheduleList extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (UserHome.isListDestroyed()) {
+                if (UserHome.isListDestroyed() || isCancelled()) {
                     break;
                 }
             }
@@ -319,9 +324,7 @@ public class FRGTeacherScheduleList extends Fragment {
                         // if it was false, attendance can be added again in the belo update funciton
                         course.setAttendanceAdded(addAttendanceSuccess);
 
-                        // Log the reaction of the request
-                        Log.d("AttendanceStatus: ", Boolean.toString(addAttendanceSuccess));
-                    } catch (JSONException e) {
+                        } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }

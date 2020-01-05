@@ -7,6 +7,11 @@
         android:title="@string/action_menu_request"
         app:showAsAction="ifRoom"/>
     <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/refresh_icon"
+        android:title="@string/action_menu_logout"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/logout_icon"
         android:title="@string/action_menu_logout"
