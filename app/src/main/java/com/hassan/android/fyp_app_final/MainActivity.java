@@ -34,7 +34,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     //Connection URL 192.168.18.104:4444
-    public static final String    URL                           = "192.168.18.4";
+    // Insert new ip address here:
+    public static final String    URL                           = "192.168.43.241";
     //Account Types
     public static final String    ACCOUNT_TYPE_TEACHER          = "Teacher";
     public static final String    ACCOUNT_TYPE_HOD              = "HOD";

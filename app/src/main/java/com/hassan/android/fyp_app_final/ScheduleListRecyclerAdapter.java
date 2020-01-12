@@ -30,7 +30,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
 
     private ArrayList<CourseModel> courses;
     // Will contian all the instances of courses
-    private Context                context;
+    private Context context;
     // Required for stuff like Toast
 
     /**
@@ -47,7 +47,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                                  .inflate(R.layout.teacher_schedule_list_item, parent, false);
+                .inflate(R.layout.teacher_schedule_list_item, parent, false);
         return new Holder(view);
     }
 
@@ -124,7 +124,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                 try {
                                     // Get the json array that came in response
                                     JSONObject addAttendanceResponse = new JSONObject(response.toString());
-
+                                    Log.d("DEBUG", "onResponse: " + response.toString());
                                     // Get the successful boolean from the response to see if the attendance was
                                     // made or not
                                     addAttendanceSuccess = addAttendanceResponse.getBoolean("successful");
@@ -156,20 +156,20 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                     if (moreThanMax) {
                                         dialog.dismiss();
                                         new AlertDialog.Builder(dialogContext).setTitle("Invalid Attendance")
-                                                                              .setMessage(
-                                                                                      "Attendance entered is " +
-                                                                                      "more than the number of " +
-                                                                                      "students enrolled.")
-                                                                              .setPositiveButton("Ok",
-                                                                                                 new DialogInterface.OnClickListener() {
-                                                                                                     @Override
-                                                                                                     public void onClick(
-                                                                                                             DialogInterface dialog,
-                                                                                                             int which) {
-                                                                                                         dialog.dismiss();
-                                                                                                     }
-                                                                                                 }).create()
-                                                                              .show();
+                                                .setMessage(
+                                                        "Attendance entered is " +
+                                                                "more than the number of " +
+                                                                "students enrolled.")
+                                                .setPositiveButton("Ok",
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(
+                                                                    DialogInterface dialog,
+                                                                    int which) {
+                                                                dialog.dismiss();
+                                                            }
+                                                        }).create()
+                                                .show();
                                         holder.changeAttendanceEntered(false);
                                         courses.get(position).setAttendance(-1);
                                         courses.get(position).setAttendanceAdded(false);
@@ -190,10 +190,10 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                     // React based on success statuses
                                     if (addAttendanceSuccess) {
                                         Toast.makeText(context,
-                                                       "Attendance is " + tvAttendance.getText().toString() +
-                                                       "\tHolder.Attendance Entered:" + holder.attendanceEntered +
-                                                       "Attendance Upload Success:" + addAttendanceSuccess,
-                                                       Toast.LENGTH_SHORT).show();
+                                                "Attendance is " + tvAttendance.getText().toString() +
+                                                        "\tHolder.Attendance Entered:" + holder.attendanceEntered +
+                                                        "Attendance Upload Success:" + addAttendanceSuccess,
+                                                Toast.LENGTH_SHORT).show();
                                     } else {
                                         Log.d("AttendanceStatus: ", Boolean.toString(addAttendanceSuccess));
                                     }
@@ -210,7 +210,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                                     Log.v("XXXXXXXXXXXXXXXXXX", error.getLocalizedMessage());
                                 } else {
                                     Toast.makeText(context, "Check your internet connection and try again.",
-                                                   Toast.LENGTH_LONG).show();
+                                            Toast.LENGTH_LONG).show();
                                 }
                             }
                         };
@@ -257,6 +257,7 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
                     });
                     builder.create().show();
                     return;
+
                 }
 
                 // Condition # 2
@@ -300,11 +301,11 @@ public class ScheduleListRecyclerAdapter extends RecyclerView.Adapter<ScheduleLi
      * Class where the layout is initialized and its views are bound to variables (check constructor)
      */
     class Holder extends RecyclerView.ViewHolder {
-        boolean   attendanceEntered;
-        TextView  courseNameText;
-        TextView  courseDaySlotText;
+        boolean attendanceEntered;
+        TextView courseNameText;
+        TextView courseDaySlotText;
         ImageView courseStatusImage;
-        Button    attendanceButton;
+        Button attendanceButton;
 
         public Holder(View itemView) {
             super(itemView);
